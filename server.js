@@ -1,17 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
+
+
 var db = mongoose.createConnection('localhost', 'test');
 
-var gameSchema = new mongoose.Schema({
-    name: String,
-    sport: String,
-    longitude: Number,
-    latitude: Number,
-    players: Array,
-    description: String,
-    completed: Boolean
-});
 var userSchema = new mongoose.Schema({
     name: String,
     email: String,
@@ -61,8 +54,11 @@ app.post('/games/create', function (req, res) {
     });
 
     game.save(function (err) {
-        if (err) console.log('Error Writing to DB');
-    });
+        if (err) {
+          res.send({error: err});
+        } else {
+          res.send(game);
+        });
 });
 app.post('/games/join', function (req, res) {
     // TODO: Not implemented
