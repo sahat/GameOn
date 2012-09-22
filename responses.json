@@ -1,0 +1,12 @@
+Games
+
+POST /games/create
+  success: {
+   //Game Object
+  }
+  error: {
+    //Error Object
+  }
+
+
+
