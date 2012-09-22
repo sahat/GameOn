@@ -1,0 +1,13 @@
+{
+  "name": "gameon-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.0rc3",
+    "mongoose": "3.1.3"
+    "mocha": "1.5.0"
+  }
+}
