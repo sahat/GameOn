@@ -9,16 +9,33 @@ var gameSchema = new mongoose.Schema({
     longitude: Number,
     latitude: Number,
     players: Array,
-    description: String
+    description: String,
+    completed: Boolean
 });
 var userSchema = new mongoose.Schema({
     name: String,
     email: String,
     avatar: String, // Binary
     comments: Array,
-    games: Array
+    games: Array,
+    bio: String,
 });
+/*
+var User = db.model('User', userSchema);
 
+var user = new User({
+        name: 'Sahat Yalkabov',
+        email: 'sahat@msn.com',
+        avatar: 'http://gravatar.com/image/',
+        comments: ['Hello World Comment', 'Comment 2'],
+        games: ['my soccer game 1', 'handball 007', 'Basketball @ Tribeca'],
+        bio: 'User bio goes here'
+    });
+
+    user.save(function (err) {
+        if (err) console.log('Error Writing to DB');
+    });
+*/
 var Game = db.model('Game', gameSchema);
 
 var app = express.createServer();
@@ -57,7 +74,16 @@ app.get('/games/nearby/:location', function (req, res) {
     // TODO: Not implemented
 });
 app.delete('/games/:game_id', function (req, res) {
-    // TODO: Not implemented
+    return Game.findById(req.params.game_id, function (err, game) {
+        return game.remove(function (err) {
+            if (!err) {
+                console.log("Game has been removed");
+                return res.send('');
+            } else {
+                console.log(err);
+            }
+        });
+    });
 });
 app.get('/games/:game_id', function (req, res){
     return Game.findById(req.params.game_id, function(err, game) {
@@ -79,6 +105,7 @@ app.post('/comment', function (req, res) {
 app.delete('/comment/:game_id', function (req, res) {
     // TODO: Not implemented
 });
+
 app.get('/comment/:game_id', function (req, res) {
     // TODO: Not implemented
 });
@@ -94,16 +121,6 @@ app.put('/user/:user_id', function (req, res) {
 });
 
 /*
-app.get('/api/products/:id', function (req, res){
-    return ProductModel.findById(req.params.id, function (err, product) {
-        if (!err) {
-            return res.send(product);
-        } else {
-            return console.log(err);
-        }
-    });
-});
-
 app.put('/api/products/:id', function (req, res){
     return ProductModel.findById(req.params.id, function (err, product) {
         product.title = req.body.title;
@@ -116,18 +133,6 @@ app.put('/api/products/:id', function (req, res){
                 console.log(err);
             }
             return res.send(product);
-        });
-    });
-});
-app.delete('/api/products/:id', function (req, res){
-    return ProductModel.findById(req.params.id, function (err, product) {
-        return product.remove(function (err) {
-            if (!err) {
-                console.log("removed");
-                return res.send('');
-            } else {
-                console.log(err);
-            }
         });
     });
 });
