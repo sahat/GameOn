@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-
+var User = require('./users');
+var Comment = require('./comments');
 var db = mongoose.createConnection('localhost', 'test');
 
 var GameSchema = new mongoose.Schema({
@@ -7,10 +8,10 @@ var GameSchema = new mongoose.Schema({
   sport: String,
   longitude: Number,
   latitude: Number,
-  players: {type: [UserSchema]},
+  players: {type: [User]},
   description: String, //TODO: 140 chars limit
   timestamp: Date,
-  comments: {type: [CommentSchema]};
+  comments: {type: [Comment]}
 });
 
 var Game = db.model('Game', GameSchema);

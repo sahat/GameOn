@@ -1,37 +1,12 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
-
+var create_game = require('./controllers/games').create_game;
 
 var db = mongoose.createConnection('localhost', 'test');
 
-var userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  avatar: String, // Binary
-  comments: Array,
-  games: Array,
-  bio: String,
-});
-/*
-   var User = db.model('User', userSchema);
-
-   var user = new User({
-   name: 'Sahat Yalkabov',
-   email: 'sahat@msn.com',
-   avatar: 'http://gravatar.com/image/',
-   comments: ['Hello World Comment', 'Comment 2'],
-   games: ['my soccer game 1', 'handball 007', 'Basketball @ Tribeca'],
-   bio: 'User bio goes here'
-   });
-
-   user.save(function (err) {
-   if (err) console.log('Error Writing to DB');
-   });
-   */
-var Game = db.model('Game', gameSchema);
-
 var app = express.createServer();
+
 app.configure(function () {
   app.use(express.bodyParser());
   app.use(express.cookieParser());
@@ -39,33 +14,18 @@ app.configure(function () {
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
+
 app.listen(3000);
 
-/*
- * GAME API
- */
-app.post('/games/create', function (req, res) {
-  var game = new Game({
-    creator_id: req.body.creator_id,
-    sport: req.body.sport,
-    longitude: req.body.longitude,
-    latitude: req.body.latitude,
-    players: req.body.players,
-    description: req.body.description,
-    timestamp: req.body.timestamp,
-    comments: []
-  });
+/* * * * * *
+ * ROUTES  *
+ * * * * * */
 
-  game.save(function (err) {
-    if (err) {
-      res.send({error: err});
-    } else {
-      res.send(game);
-    });
-  });
+app.post('/games/create', create_game);
+
 app.post('/games/join', function (req, res) {
   // TODO: Not implemented
-});uu
+});
 app.get('/games/user/:user_id', function (req, res) {
   // TODO: Not implemented
 });
@@ -122,6 +82,8 @@ app.get('/comment/:game_id', function (req, res) {
  */
 app.get('/user/:user_id', function (req, res) {
   // TODO: Not implemented
+  // return user object (- password)
+  // bcrypt security
 });
 app.put('/user/:user_id', function (req, res) {
   // TODO: Not implemented
