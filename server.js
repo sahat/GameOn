@@ -1,6 +1,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
-mongoose.connect('localhost', 'test');
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
+
 ////////// Schemas //////////
 var GameSchema = new mongoose.Schema({
   sport: String,
@@ -14,9 +16,9 @@ var GameSchema = new mongoose.Schema({
   created_on: { type: Date, default: Date.now }
 });
 var UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
+  name: { type: String, required: true },
+  email: { type: String, required: true, index: { unique: true } },
+  password: { type: String, required: true },
   avatar: String,
   bio: String,
   created_on: { type: Date, default: Date.now }
@@ -29,6 +31,8 @@ var User = mongoose.model('User', UserSchema)
 ////////// End Models //////////
 
 ////////// Express //////////
+mongoose.connect('localhost', 'test');
+
 var app = express();
 
 app.configure(function () {
