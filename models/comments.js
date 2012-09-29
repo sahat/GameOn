@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var db = mongoose.createConnection('localhost', 'test');
+
 var CommentSchema = new mongoose.Schema({
   message: String,
   timestamp: Date,

@@ -1,11 +1,7 @@
-
-/*
- * POST /games/create
- */
 var Game = require('../models/games');
 
-exports.create_game = function(req, res) {
-
+// POST <= games/create
+exports.createGame = function(req, res) {
   var game = new Game({
     creator_id: req.body.creator_id
     //isport: req.body.sport,
@@ -16,7 +12,6 @@ exports.create_game = function(req, res) {
     //timestamp: req.body.timestamp,
     //comments: []
   });
-
   game.save(function (err) {
     if (!err) {
       res.send(game);

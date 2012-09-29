@@ -1,11 +1,11 @@
 var express = require('express');
 var mongoose = require('mongoose');
-
-var create_game = require('./controllers/games').create_game;
-
+//var games = require('./controllers/games');
+var users = require('./controllers/users');
 var db = mongoose.createConnection('localhost', 'test');
+var User = require('./models/users');
 
-var app = express.createServer();
+var app = express();
 
 app.configure(function () {
   app.use(express.bodyParser());
@@ -16,13 +16,8 @@ app.configure(function () {
 });
 
 app.listen(3000);
-
-/* * * * * *
- * ROUTES  *
- * * * * * */
-
-app.post('/games/create', create_game);
-
+/*
+app.post('/games/create', games.createGame);
 app.post('/games/join', function (req, res) {
   // TODO: Not implemented
 });
@@ -63,6 +58,9 @@ app.get('/games', function (req, res) {
     }
   });
 });
+*/
+
+
 /*
  * Comments API
  */
@@ -80,13 +78,18 @@ app.get('/comment/:game_id', function (req, res) {
 /*
  * Users API
  */
-app.get('/user/:user_id', function (req, res) {
-  // TODO: Not implemented
-  // return user object (- password)
-  // bcrypt security
-});
-app.put('/user/:user_id', function (req, res) {
-  // TODO: Not implemented
+
+app.post('/users/create', users.createUser);
+app.get('/users', function (req, res) {
+  return User.find(function (err, users) {
+    if (!err) {
+      console.log('no error');
+      return res.send(users);
+    } else {
+      console.log('Error occured');
+      return res.send(err);
+    }
+  });
 });
 
 /*
@@ -153,5 +156,4 @@ Error.call(this, msg);
 Error.captureStackTrace(this, arguments.callee);
 }
 */
-
 console.log('Listening on http://0.0.0.0:' + 3000 );

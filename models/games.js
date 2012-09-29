@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var User = require('./users');
 var Comment = require('./comments');
-var db = mongoose.createConnection('localhost', 'test');
+
+var db = require('server.js');
 
 var GameSchema = new mongoose.Schema({
   creator_id: mongoose.Schema.Types.ObjectId,
