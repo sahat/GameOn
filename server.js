@@ -23,6 +23,43 @@ var UserSchema = new mongoose.Schema({
   bio: String,
   created_on: { type: Date, default: Date.now }
 });
+UserSchema.pre('save', function (next) {
+  var user = this;
+
+  // hash password only if modified or new
+  if (!user.isModified('password')) {
+    return next();
+  }
+
+  // generate a salt
+  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+    if (err) {
+      return next(err);
+    }
+
+    // hash the password with a new salt
+    bcrypt.hash(user.password, salt, function (err, hash) {
+      if (err) {
+        return next(err);
+      }
+
+      // override text password with the hashed password
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+    if (err) {
+       cb(err);
+    }
+    else {
+      cb (null, isMatch);
+    }
+  });
+};
 ////////// End Schemas //////////
 
 ////////// Models //////////
@@ -47,6 +84,16 @@ app.listen(3000);
 ////////// End Express //////////
 
 ////////// Routes + Controllers //////////
+app.post('/login', function (req, res) {
+  User.findOne({ email: req.body.email }, function(err, user) {
+    // test a matching password
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      console.log(req.body.password, isMatch);
+      return res.send('Password is ' + isMatch);
+    });
+  });
+});
+
 app.post('/users/create', function (req, res) {
   var user = new User({
     name: req.body.name,
@@ -65,8 +112,13 @@ app.post('/users/create', function (req, res) {
   });
 });
 app.get('/users', function (req, res) {
-  return User.find(function (err, users) {
+  User.find(function (err, users) {
     if (!err) {
+      // LOL WTF!!!1
+      for (var i=0; i<users.length; i++) {
+        users[i] = users[i].toObject();
+        delete users[i].password;
+      }
       return res.send(users);
     }
   });
@@ -137,19 +189,23 @@ app.get('/games', function (req, res) {
     }
   });
 });
-
-
 app.post('/comment', function (req, res) {
-  // TODO: Not implemented
 });
 app.delete('/comment/:game_id', function (req, res) {
-  // TODO: Not implemented
 });
-
 app.get('/comment/:game_id', function (req, res) {
-  // TODO: Not implemented
 });
-
 ////////// End Routes + Controllers //////////
 
 console.log('Listening on http://0.0.0.0:' + 3000 );
+
+/*
+/* saved for later use
+// fetch user and test password verification
+
+ // test a failing password
+ user.comparePassword('123Password', function(err, isMatch) {
+ if (err) throw err;
+ console.log('123Password:', isMatch); // -> 123Password: false
+ });
+*/

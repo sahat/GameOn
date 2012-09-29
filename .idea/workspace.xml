@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d4643c76-7fe4-40e2-8269-ffb29f0e5957" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
     </list>
     <ignored path="GameOn.iws" />
@@ -27,8 +26,14 @@
       <file leaf-file-name="server.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="45" selection-start="777" selection-end="777" vertical-scroll-proportion="0.2658228">
-              <folding />
+            <state line="84" column="0" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.17874396">
+              <folding>
+                <element signature="e#197#580#0" expanded="false" />
+                <element signature="e#902#1421#0" expanded="false" />
+                <element signature="e#2661#3005#0" expanded="false" />
+                <element signature="e#3339#3464#0" expanded="false" />
+                <element signature="e#3514#3914#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -67,8 +72,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="569" />
-    <option name="y" value="51" />
+    <option name="x" value="413" />
+    <option name="y" value="60" />
     <option name="width" value="848" />
     <option name="height" value="744" />
   </component>
@@ -185,7 +190,11 @@
       <created>1348954082793</created>
       <updated>1348954082793</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="required fields in user schema">
+      <created>1348955557397</created>
+      <updated>1348955557397</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -209,10 +218,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="569" y="51" width="848" height="744" extended-state="0" />
+    <frame x="413" y="60" width="848" height="744" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3287037" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287037" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905295" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32744783" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -236,8 +245,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
-    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="myTodoPanelSettings">
       <value>
         <are-packages-shown value="false" />
@@ -266,7 +275,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed models and controllers folders. no longer needed." />
+    <option name="LAST_COMMIT_MESSAGE" value="required fields in user schema" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -282,6 +291,7 @@
     <MESSAGE value="moved everything to server.js" />
     <MESSAGE value="creating a user should work now" />
     <MESSAGE value="removed models and controllers folders. no longer needed." />
+    <MESSAGE value="required fields in user schema" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -317,8 +327,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="45" selection-start="777" selection-end="777" vertical-scroll-proportion="0.2658228">
-          <folding />
+        <state line="84" column="0" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.17874396">
+          <folding>
+            <element signature="e#197#580#0" expanded="false" />
+            <element signature="e#902#1421#0" expanded="false" />
+            <element signature="e#2661#3005#0" expanded="false" />
+            <element signature="e#3339#3464#0" expanded="false" />
+            <element signature="e#3514#3914#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
