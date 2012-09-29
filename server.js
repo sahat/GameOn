@@ -3,14 +3,15 @@ var mongoose = require('mongoose');
 mongoose.connect('localhost', 'test');
 ////////// Schemas //////////
 var GameSchema = new mongoose.Schema({
-  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   sport: String,
   longitude: Number,
   latitude: Number,
   players: { type: [User] },
   description: String,
   timestamp: { type: Date, default: Date.now },
-  comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }]
+  comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }],
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  created_on: { type: Date, default: Date.now }
 });
 var UserSchema = new mongoose.Schema({
   name: String,
