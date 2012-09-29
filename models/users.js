@@ -9,6 +9,4 @@ var UserSchema = new mongoose.Schema({
   //created_on: Date
 });
 
-var db = mongoose.createConnection('localhost', 'test');
-
-module.exports = db.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema);

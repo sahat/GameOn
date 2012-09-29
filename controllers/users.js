@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var User = require('../models/users');
 
 /* POST user/create */
@@ -7,20 +8,39 @@ exports.createUser = function(req, res) {
   });
   user.save(function (err) {
     if (!err) {
+      console.log("Saved user to the database successfully");
       res.send(user);
-      console.log("Saved user to DB");
     } else {
+      console.log(err);
       res.send(err);
     }
   });
 }
 
-/* GET user/:user_id */
+/* GET users */
 exports.findAllUsers = function(req, res) {
-  console.log("I am in find all users...");
-  var all_users = "kitten";
-  all_users =
-
-  console.log(all_users);
+  mongoose.connect('localhost', 'test');
+  return User.find(function (err, users) {
+    if (!err) {
+      console.log(users);
+      return res.send(users);
+    } else {
+      console.log(err);
+      return res.send(err);
+    }
+  });
 }
 
+/* GET users/:user_id */
+exports.findUserById = function(req, res) {
+  return User.findById(req.params.game_id, function(err, user) {
+    if (!err) {
+      console.log(user);
+      return res.send(user);
+    }
+    else {
+      console.log(err);
+      return res.send(err);
+    }
+  });
+}

@@ -1,28 +1,102 @@
 var express = require('express');
 var mongoose = require('mongoose');
-//var games = require('./controllers/games');
-var users = require('./controllers/users');
-var db = mongoose.createConnection('localhost', 'test');
-var User = require('./models/users');
+mongoose.connect('localhost', 'test');
+////////// Schemas //////////
+var GameSchema = new mongoose.Schema({
+  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  sport: String,
+  longitude: Number,
+  latitude: Number,
+  players: { type: [User] },
+  description: String,
+  timestamp: { type: Date, default: Date.now },
+  comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }]
+});
+var UserSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+  avatar: String,
+  bio: String,
+  created_on: { type: Date, default: Date.now }
+});
+////////// End Schemas //////////
 
+////////// Models //////////
+var Game = mongoose.model('Game', GameSchema);
+var User = mongoose.model('User', UserSchema)
+////////// End Models //////////
+
+////////// Express //////////
 var app = express();
 
 app.configure(function () {
   app.use(express.bodyParser());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: "qwerty"}));
+  app.use(express.session({ secret: "change me"}));
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.listen(3000);
-/*
-app.post('/games/create', games.createGame);
+////////// End Express //////////
+
+////////// Routes + Controllers //////////
+app.post('/users/create', function (req, res) {
+  var user = new User({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    avatar: req.body.avatar,
+    bio: req.body.bio
+  });
+  user.save(function (err) {
+    if (!err) {
+      console.log("Saved user to the database successfully");
+      res.send(user);
+    } else {
+      res.send(err);
+    }
+  });
+});
+app.get('/users', function (req, res) {
+  return User.find(function (err, users) {
+    if (!err) {
+      return res.send(users);
+    }
+  });
+});
+app.get('/users/:user_id', function (req, res) {
+  return User.findById(req.params.user_id, function(err, user) {
+    if (!err) {
+      return res.send(user);
+    }
+  });
+});
+
+app.post('/games/create', function (req, res) {
+  var game = new Game({
+    creator_id: req.body.creator_id,
+    sport: req.body.sport,
+    longitude: req.body.longitude,
+    latitude: req.body.latitude,
+    players: req.body.players,
+    description: req.body.description,
+    timestamp: req.body.timestamp,
+    comments: []
+  });
+  game.save(function (err) {
+    if (!err) {
+      res.send(game);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 app.post('/games/join', function (req, res) {
-  // TODO: Not implemented
 });
 app.get('/games/user/:user_id', function (req, res) {
-  // TODO: Not implemented
 });
 app.get('/games/nearby/:latitude/:longitude', function (req, res) {
   temp = [];
@@ -58,12 +132,8 @@ app.get('/games', function (req, res) {
     }
   });
 });
-*/
 
 
-/*
- * Comments API
- */
 app.post('/comment', function (req, res) {
   // TODO: Not implemented
 });
@@ -75,85 +145,6 @@ app.get('/comment/:game_id', function (req, res) {
   // TODO: Not implemented
 });
 
-/*
- * Users API
- */
+////////// End Routes + Controllers //////////
 
-app.post('/users/create', users.createUser);
-app.get('/users', function (req, res) {
-  return User.find(function (err, users) {
-    if (!err) {
-      console.log('no error');
-      return res.send(users);
-    } else {
-      console.log('Error occured');
-      return res.send(err);
-    }
-  });
-});
-
-/*
-   app.put('/api/products/:id', function (req, res){
-   return ProductModel.findById(req.params.id, function (err, product) {
-   product.title = req.body.title;
-   product.description = req.body.description;
-   product.style = req.body.style;
-   return product.save(function (err) {
-   if (!err) {
-   console.log("updated");
-   } else {
-   console.log(err);
-   }
-   return res.send(product);
-   });
-   });
-   });
-   app.post('/api/products', function (req, res){
-   var product;
-   console.log("POST: ");
-   console.log(req.body);
-   product = new ProductModel({
-   title: req.body.title,
-   description: req.body.description,
-   style: req.body.style,
-   });
-   product.save(function (err) {
-   if (!err) {
-   return console.log("created");
-   } else {
-   return console.log(err);
-   }
-   });
-   return res.send(product);
-   });
-
-   app.get('/', function(req,res){
-
-   res.render('index.jade', {
-   locals : {
-   title : 'Your Page Title'
-   ,description: 'Your Page Description'
-   ,author: 'Your Name'
-   ,analyticssiteid: 'XXXXXXX'
-   }
-   });
-   });
-
-
-//A Route for Creating a 500 Error (Useful to keep around)
-app.get('/500', function(req, res){
-throw new Error('This is a 500 Error');
-});
-
-//The 404 Route (ALWAYS Keep this as the last route)
-app.get('/*', function(req, res){
-throw new NotFound;
-});
-
-function NotFound(msg){
-this.name = 'NotFound';
-Error.call(this, msg);
-Error.captureStackTrace(this, arguments.callee);
-}
-*/
 console.log('Listening on http://0.0.0.0:' + 3000 );
