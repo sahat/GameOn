@@ -5,8 +5,7 @@ var bcrypt = require('bcrypt');
 ////////// Schemas //////////
 var GameSchema = new mongoose.Schema({
   sport: String,
-  longitude: Number,
-  latitude: Number,
+  geo: { type: [Number], index: '2d' },
   players: { type: [User] },
   description: String,
   timestamp: { type: Date, default: Date.now },
@@ -114,7 +113,6 @@ app.post('/users/create', function (req, res) {
 app.get('/users', function (req, res) {
   User.find(function (err, users) {
     if (!err) {
-      // LOL WTF!!!1
       for (var i=0; i<users.length; i++) {
         users[i] = users[i].toObject();
         delete users[i].password;
@@ -161,10 +159,9 @@ app.get('/games/user/:user_id', function (req, res) {
 });
 
 app.get('/games/nearby/:latitude/:longitude', function (req, res) {
-  temp = [];
-  nearby_games = Game.find().all(function (game) {
-    temp.push(game);
-    return res.send(temp_push);
+  Game.find({ geo: { $nearSphere: [req.params.latitude, req.params.longitude] } }, function (err, games) {
+    if (err) res.send(err);
+    else res.send(games);
   });
 });
 
