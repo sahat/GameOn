@@ -20,7 +20,7 @@ Back-end support for the GameOn iOS app.
 
  - Creating a new user
      // POST /users/create
-     curl --data "name=Sahat&email=sahat@msn.com&password=PASS1234&avatar=avatar.jpeg&bio=my_biography_block" http://localhost:3000/users/create
+ curl --data "name=Sahat&email=sahat@msn.com&password=PASS1234&avatar=avatar.jpeg&bio=my_biography_block" http://localhost:3000/users/create
 
      {
        "__v": 0,

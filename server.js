@@ -1,3 +1,4 @@
+var request = require('request');
 var express = require('express');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
@@ -6,13 +7,14 @@ var bcrypt = require('bcrypt');
 var GameSchema = new mongoose.Schema({
   sport: String,
   geo: { type: [Number], index: '2d' },
-  players: { type: [User] },
+  players:[User],
   description: String,
-  timestamp: { type: Date, default: Date.now },
-  comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }],
-  created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  created_on: { type: Date, default: Date.now }
+  created_by: String,
+  //created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  created_on: { type: Date, default: Date.now },
+  comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }]
 });
+
 var UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
@@ -21,6 +23,8 @@ var UserSchema = new mongoose.Schema({
   bio: String,
   created_on: { type: Date, default: Date.now }
 });
+
+
 UserSchema.pre('save', function (next) {
   var user = this;
 
@@ -83,12 +87,34 @@ app.listen(3000);
 
 ////////// Routes + Controllers //////////
 app.post('/login', function (req, res) {
-  User.findOne({ email: req.body.email }, function(err, user) {
-    // test a matching password
-    user.comparePassword(req.body.password, function(err, isMatch) {
-      console.log(req.body.password, isMatch);
-      return res.send('Password is ' + isMatch);
+  User.findOne({ email: req.body.email }, function (err, user) {
+    user.comparePassword(req.body.password, function (err, isMatch) {
+      if (!isMatch) {
+        return res.send({ error: 'Invalid Password' });
+      } else {
+        return res.send({ success: 'Password matched' });
+      }
     });
+  });
+});
+
+app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
+  var CATEGORIES = ['4e39a956bd410d7aed40cbc3', '4bf58dd8d48988d1e1941735', '4e39a9cebd410d7aed40cbc4', '4bf58dd8d48988d1ba941735'];
+  var CLIENT_ID = 'HPAJ2BJUXB11LUWR4OVFWHQTIOIO0DB02XR5MA1KTSGATX0K';
+  var CLIENT_SECRET = 'R4QJ2TR2EJVOFGMXTBG0Q415NV3OFR4H0H4YHDS1T54S1QAX';
+
+  var URL = 'https://api.foursquare.com/v2/venues/search?ll=' +
+    req.params.latitude + ',' + req.params.longitude + '&categoryId=' +
+    CATEGORIES.toString() + '&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET;
+
+  request(URL, function (error, response, body) {
+    if (!error) {
+      console.log(body);
+      res.send(JSON.parse(body));
+    } else {
+      console.log('didnt go through');
+      res.send(error);
+    }
   });
 });
 
@@ -132,15 +158,14 @@ app.get('/users/:user_id', function (req, res) {
 
 app.post('/games/create', function (req, res) {
   var game = new Game({
-    creator_id: req.body.creator_id,
+    created_by: "Sahat",
     sport: req.body.sport,
-    longitude: req.body.longitude,
-    latitude: req.body.latitude,
-    players: req.body.players,
-    description: req.body.description,
-    timestamp: req.body.timestamp,
-    comments: []
+    geo: [req.body.latitude, req.body.longitude],
+    description: req.body.description
   });
+
+  game.players.push('Sahat');
+
   game.save(function (err) {
     if (!err) {
       res.send(game);
@@ -159,7 +184,7 @@ app.get('/games/user/:user_id', function (req, res) {
 });
 
 app.get('/games/nearby/:latitude/:longitude', function (req, res) {
-  Game.find({ geo: { $nearSphere: [req.params.latitude, req.params.longitude] } }, function (err, games) {
+  Game.find({ geo: { $nearSphere: [req.params.longitude, req.params.latitude] } }, function (err, games) {
     if (err) res.send(err);
     else res.send(games);
   });

@@ -6,6 +6,7 @@
     "express": "3.0.x",
     "mongoose": "3.x",
     "mocha": "1.x",
-    "bcrypt": "0.7.x"
+    "bcrypt": "0.7.x",
+    "request": "*"
   }
 }
