@@ -41,3 +41,21 @@ Back-end support for the GameOn iOS app.
       "created_on": "2012-11-25T16:02:23.264Z"
     }
 
+### User sign-in
+*Allows a user to login into the system*
+
+**POST** /login
+- email: `String`
+- password: `String`
+
+**Return** void
+
+### Get all users
+*Queries MongoDB for all user objects, excluding the password field*
+
+**GET** /users
+- No params
+
+**Return** All user objects
+
+
