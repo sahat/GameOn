@@ -1,7 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-var SALT_WORK_FACTOR = 10;
 
 ////////// Schemas //////////
 var GameSchema = new mongoose.Schema({
@@ -32,7 +31,7 @@ UserSchema.pre('save', function (next) {
   }
 
   // generate a salt
-  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+  bcrypt.genSalt(10, function (err, salt) {
     if (err) {
       return next(err);
     }
@@ -198,11 +197,15 @@ app.get('/games', function (req, res) {
     }
   });
 });
+
 app.post('/comment', function (req, res) {
+
 });
 app.delete('/comment/:game_id', function (req, res) {
+
 });
 app.get('/comment/:game_id', function (req, res) {
+
 });
 ////////// End Routes + Controllers //////////
 

@@ -1,11 +1,11 @@
 {
   "name": "gameon-server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "dependencies": {
-    "express": "3.0.0rc4",
-    "mongoose": "3.1.2",
-    "mocha": "1.5.0",
-    "bcrypt": "0.7.2"
+    "express": "3.0.x",
+    "mongoose": "3.x",
+    "mocha": "1.x",
+    "bcrypt": "0.7.x"
   }
 }
