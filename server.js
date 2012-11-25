@@ -111,6 +111,7 @@ app.post('/users/create', function (req, res) {
     }
   });
 });
+
 app.get('/users', function (req, res) {
   User.find(function (err, users) {
     if (!err) {
@@ -123,6 +124,7 @@ app.get('/users', function (req, res) {
     }
   });
 });
+
 app.get('/users/:user_id', function (req, res) {
   return User.findById(req.params.user_id, function(err, user) {
     if (!err) {
@@ -152,9 +154,13 @@ app.post('/games/create', function (req, res) {
 });
 
 app.post('/games/join', function (req, res) {
+
 });
+
 app.get('/games/user/:user_id', function (req, res) {
+
 });
+
 app.get('/games/nearby/:latitude/:longitude', function (req, res) {
   temp = [];
   nearby_games = Game.find().all(function (game) {
@@ -162,6 +168,7 @@ app.get('/games/nearby/:latitude/:longitude', function (req, res) {
     return res.send(temp_push);
   });
 });
+
 app.delete('/games/:game_id', function (req, res) {
   return Game.findById(req.params.game_id, function (err, game) {
     return game.remove(function (err) {
@@ -174,12 +181,14 @@ app.delete('/games/:game_id', function (req, res) {
     });
   });
 });
+
 app.get('/games/:game_id', function (req, res){
   return Game.findById(req.params.game_id, function(err, game) {
     if (!err) return res.send(game);
     else return res.send(err);
   });
 });
+
 app.get('/games', function (req, res) {
   return Game.find(function (err, games) {
     if (!err) {
