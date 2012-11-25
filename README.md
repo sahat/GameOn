@@ -18,18 +18,26 @@ Back-end support for the GameOn iOS app.
 
 ## How to use
 
- - Creating a new user
-     // POST /users/create
-     curl --data "name=Sahat&email=sahat@msn.com&password=PASS1234&avatar=avatar.jpeg&bio=my_biography_block" http://localhost:3000/users/create
+### Creating a new user
+*Creates a new MongoDB document*
 
-     {
-       "__v": 0,
-       "name": "Sahat",
-       "email": "sahat@msn.com",
-       "password": "$2a$10$SlwV26HWLaRSxGDwy.pT6uJrAthjHFIuYkEer6WQ19EEiWHyEpcoC",
-       "avatar": "avatar.jpeg",
-       "bio": "my_biography_block",
-       "_id": "50b2410f5d33a21209000002",
-       "created_on": "2012-11-25T16:02:23.264Z"
-     }
+**POST** /users/create
+- name: `String`
+- email: `String`
+- password: `String`
+- avatar: `String`
+- bio: `String`
+
+**Return** User Object
+
+    {
+      "__v": 0,
+      "name": "Sahat",
+      "email": "sahat@msn.com",
+      "password": "$2a$10$SlwV26HWLaRSxGDwy.pT6uJrAthjHFIuYkEer6WQ19EEiWHyEpcoC",
+      "avatar": "avatar.jpeg",
+      "bio": "my_biography_block",
+      "_id": "50b2410f5d33a21209000002",
+      "created_on": "2012-11-25T16:02:23.264Z"
+    }
 
