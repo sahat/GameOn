@@ -105,7 +105,11 @@ app.get('/', function (req, res) {
  * 4b. If good, respond with user object that also includes session token
  */
 
-function isAppAuthorized (api_key, call_id, signature) {
+function isAppAuthorized (query) {
+  var api_key = query['api_key'];
+  var call_id = query['call_id'];
+  var signature = query['signature'];
+
   var sig = crypto.createHash('md5').update(API_SECRET + call_id).digest("hex");
   console.log('My signature:', sig, API_KEY);
   console.log('Bilal', api_key, call_id, signature);
@@ -128,30 +132,28 @@ app.post('/login', function (req, res) {
 });
 
 app.post('/signup', function (req, res) {
-  crypto.randomBytes(32, function (ex, buf) {
-    var token = buf.toString('hex');
+  if (isAppAuthorized(api_key, call_id, signature) {
+    crypto.randomBytes(32, function (ex, buf) {
+      var token = buf.toString('hex');
+      var user = new User({
+        name: req.body.name,
+        api_token: token,
+        email: req.body.email,
+        password: req.body.password,
+        avatar: req.body.avatar,
+        bio: req.body.bio
+      });
 
-    var user = new User({
-      name: req.body.name,
-      api_token: token,
-      email: req.body.email,
-      password: req.body.password,
-      avatar: req.body.avatar,
-      bio: req.body.bio
+      user.save(function (err) {
+        if (!err) {
+          console.log("Saved user to the database successfully");
+          res.send(user);
+        } else {
+          res.send(err);
+        }
+      });
     });
-
-    user.save(function (err) {
-      if (!err) {
-        console.log("Saved user to the database successfully");
-        res.send(user);
-      } else {
-        res.send(err);
-      }
-    });
-  });
-
-
-
+  }
 });
 
 app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
@@ -181,11 +183,7 @@ app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
  *
  */
 app.get('/users', function (req, res) {
-  var api_key = req.query['api_key'];
-  var call_id = req.query['call_id'];
-  var signature = req.query['signature'];
-
-  if (isAppAuthorized(api_key, call_id, signature)) {
+  if (isAppAuthorized(req.query)) {
     User.find(function (err, users) {
       if (!err) {
         for (var i=0; i<users.length; i++) {
