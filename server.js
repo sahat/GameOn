@@ -1,7 +1,13 @@
 var request = require('request');
 var express = require('express');
 var mongoose = require('mongoose');
+var crypto = require('crypto');
 var bcrypt = require('bcrypt');
+var RedisStore = require('connect-redis')(express);
+
+var API_KEY = "MYKEY";
+var API_SECRET = 'BANANAS';
+
 
 ////////// Schemas //////////
 var GameSchema = new mongoose.Schema({
@@ -14,16 +20,15 @@ var GameSchema = new mongoose.Schema({
   created_on: { type: Date, default: Date.now },
   comments: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }]
 });
-
 var UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
+  session_token: String,
   password: { type: String, required: true },
   avatar: String,
   bio: String,
   created_on: { type: Date, default: Date.now }
 });
-
 
 UserSchema.pre('save', function (next) {
   var user = this;
@@ -70,32 +75,85 @@ var User = mongoose.model('User', UserSchema)
 ////////// End Models //////////
 
 ////////// Express //////////
-mongoose.connect('localhost', 'test');
+mongoose.connect('localhost', 'gameon');
 
 var app = express();
 
 app.configure(function () {
+  app.set('port', process.env.PORT || 3000);
   app.use(express.bodyParser());
-  app.use(express.cookieParser());
-  app.use(express.session({ secret: "change me"}));
+  app.use(express.cookieParser('s3cr3t'));
+  app.use(express.session({ store: new RedisStore(), secret: 's3cr3t' }));
+  app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-app.listen(3000);
 ////////// End Express //////////
 
+app.get('/', function (req, res) {
+  console.log(req.session.user);
+  res.send(req.session.user);
+});
+
 ////////// Routes + Controllers //////////
+
+
+/**
+ * 1. Login screen with email / password fields and submit button
+ * 2. Issue a request to the server with email, password, api_key
+ * 3. Compare user's password
+ * 4a. If bad, respond with error
+ * 4b. If good, respond with user object that also includes session token
+ */
+
+function isAppAuthorized (api_key, call_id, signature) {
+  var sig = crypto.createHash('md5').update(API_SECRET + call_id).digest("hex");
+  console.log('My signature:', sig, API_KEY);
+  console.log('Bilal', api_key, call_id, signature);
+  console.log('====');
+  return (api_key === API_KEY && sig === signature);
+}
+
 app.post('/login', function (req, res) {
   User.findOne({ email: req.body.email }, function (err, user) {
     user.comparePassword(req.body.password, function (err, isMatch) {
       if (!isMatch) {
-        return res.send({ error: 'Invalid Password' });
+        res.send({ error: 'Invalid Password' });
       } else {
-        return res.send({ success: 'Password matched' });
+        user = user.toObject();
+        delete user.password;
+        res.send(user);
       }
     });
   });
+});
+
+app.post('/signup', function (req, res) {
+  crypto.randomBytes(32, function (ex, buf) {
+    var token = buf.toString('hex');
+
+    var user = new User({
+      name: req.body.name,
+      api_token: token,
+      email: req.body.email,
+      password: req.body.password,
+      avatar: req.body.avatar,
+      bio: req.body.bio
+    });
+
+    user.save(function (err) {
+      if (!err) {
+        console.log("Saved user to the database successfully");
+        res.send(user);
+      } else {
+        res.send(err);
+      }
+    });
+  });
+
+
+
 });
 
 app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
@@ -118,41 +176,38 @@ app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
   });
 });
 
-app.post('/users/create', function (req, res) {
-  var user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    avatar: req.body.avatar,
-    bio: req.body.bio
-  });
-  user.save(function (err) {
-    if (!err) {
-      console.log("Saved user to the database successfully");
-      res.send(user);
-    } else {
-      res.send(err);
-    }
-  });
-});
 
+/**
+ * Request will come with 4 query parameters: session_token, call_id (String),
+ * signature (String), uid (userID of whoever is making a request)
+ *
+ */
 app.get('/users', function (req, res) {
-  User.find(function (err, users) {
-    if (!err) {
-      for (var i=0; i<users.length; i++) {
-        users[i] = users[i].toObject();
-        delete users[i].password;
+  var api_key = req.query['api_key'];
+  var call_id = req.query['call_id'];
+  var signature = req.query['signature'];
+
+  if (isAppAuthorized(api_key, call_id, signature)) {
+    User.find(function (err, users) {
+      if (!err) {
+        for (var i=0; i<users.length; i++) {
+          users[i] = users[i].toObject();
+          delete users[i].password;
+        }
+        return res.send(users);
       }
-      return res.send(users);
-    }
-  });
+    });
+  } else {
+    res.send({error: 'Not Authorized'});
+  }
+
+
 });
 
-app.get('/users/:user_id', function (req, res) {
-  return User.findById(req.params.user_id, function(err, user) {
-    if (!err) {
-      return res.send(user);
-    }
+app.get('/users/:id', function (req, res) {
+  console.log(token);
+  return User.findById(req.params.id, function(err, user) {
+    return res.send(user);
   });
 });
 
@@ -205,8 +260,8 @@ app.delete('/games/:game_id', function (req, res) {
 
 app.get('/games/:game_id', function (req, res){
   return Game.findById(req.params.game_id, function(err, game) {
-    if (!err) return res.send(game);
-    else return res.send(err);
+    if (err) return res.send(err);
+    else return res.send(game);
   });
 });
 
@@ -231,8 +286,9 @@ app.get('/comment/:game_id', function (req, res) {
 });
 ////////// End Routes + Controllers //////////
 
-console.log('Listening on http://0.0.0.0:' + 3000 );
-
+app.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + app.get('port'));
+});
 /*
 /* saved for later use
 // fetch user and test password verification
