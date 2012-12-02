@@ -132,7 +132,7 @@ app.post('/login', function (req, res) {
 });
 
 app.post('/signup', function (req, res) {
-  if (isAppAuthorized(api_key, call_id, signature) {
+  if (isAppAuthorized(req.query)) {
     crypto.randomBytes(32, function (ex, buf) {
       var token = buf.toString('hex');
       var user = new User({
@@ -147,12 +147,15 @@ app.post('/signup', function (req, res) {
       user.save(function (err) {
         if (!err) {
           console.log("Saved user to the database successfully");
+          delete user.password;
           res.send(user);
         } else {
           res.send(err);
         }
       });
     });
+  } else {
+    res.send({error: 'Not Authorized'});
   }
 });
 
