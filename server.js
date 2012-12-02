@@ -114,16 +114,12 @@ function isAppAuthorized(data) {
   return (api_key === API_KEY && sig === signature);
 }
 
-function isAuthenticated(data) {
+function authenticateUser(data, cb) {
   var uid = data.body.uid || data.query.uid;
   var session_token = data.body.session_token || data.query.session_token;
 
   User.findOne({ 'email': uid }, function (err, user) {
-    if (!err) {
-     return (user.session_token === session_token);
-    } else {
-      return false;
-    }
+    cb(user.session_token === session_token);
   });
 }
 
@@ -143,11 +139,12 @@ app.post('/login', function (req, res) {
 
 app.post('/signup', function (req, res) {
   if (isAppAuthorized(req.body)) {
-    crypto.randomBytes(32, function (ex, buf) {
+    crypto.randomBytes(6, function (ex, buf) {
       var token = buf.toString('hex');
+
       var user = new User({
         name: req.body.name,
-        api_token: token,
+        session_token: token,
         email: req.body.email,
         password: req.body.password,
         avatar: req.body.avatar,
@@ -196,19 +193,22 @@ app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
  */
 app.get('/users', function (req, res) {
   if (isAppAuthorized(req.query)) {
-    if (isAuthenticated(req)) {
-      User.find(function (err, users) {
-        if (!err) {
-          for (var i=0; i<users.length; i++) {
-            users[i] = users[i].toObject();
-            delete users[i].password;
+
+    authenticateUser(req, function(authenticated) {
+      if (!authenticated) {
+        User.find(function (err, users) {
+          if (!err) {
+            for (var i=0; i<users.length; i++) {
+              users[i] = users[i].toObject();
+              delete users[i].password;
+            }
+            res.send(users);
           }
-          res.send(users);
-        }
-      });
-    } else {
-      res.send({ error: 'Not Authenticated' })
-    }
+        });
+      } else {
+        res.send({ error: 'Not Authenticated' });
+      }
+    });
   } else {
     res.send({ error: 'Not Authorized' });
   }
