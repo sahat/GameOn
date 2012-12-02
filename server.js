@@ -23,7 +23,6 @@ var GameSchema = new mongoose.Schema({
 var UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
-  session_token: String,
   password: { type: String, required: true },
   avatar: String,
   bio: String,
@@ -114,12 +113,17 @@ function isAppAuthorized(data) {
   return (api_key === API_KEY && sig === signature);
 }
 
-function authenticateUser(data, cb) {
-  var uid = data.body.uid || data.query.uid;
-  var session_token = data.body.session_token || data.query.session_token;
+function authenticateUser(req, res, cb) {
+  var uid = req.body.uid || req.query.uid;
+  var token = req.body.token || req.query.token;
 
   User.findOne({ 'email': uid }, function (err, user) {
-    cb(user.session_token === session_token);
+    if (!err && user) {
+      cb(user._id.toString() === token);
+    } else {
+      res.send({error: 'User not found'});
+    }
+
   });
 }
 
@@ -139,27 +143,22 @@ app.post('/login', function (req, res) {
 
 app.post('/signup', function (req, res) {
   if (isAppAuthorized(req.body)) {
-    crypto.randomBytes(6, function (ex, buf) {
-      var token = buf.toString('hex');
+    var user = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      avatar: req.body.avatar,
+      bio: req.body.bio
+    });
 
-      var user = new User({
-        name: req.body.name,
-        session_token: token,
-        email: req.body.email,
-        password: req.body.password,
-        avatar: req.body.avatar,
-        bio: req.body.bio
-      });
-
-      user.save(function (err) {
-        if (!err) {
-          console.log("Saved user to the database successfully");
-          delete user.password;
-          res.send(user);
-        } else {
-          res.send(err);
-        }
-      });
+    user.save(function (err) {
+      if (!err) {
+        console.log("Saved user to the database successfully");
+        delete user.password;
+        res.send(user);
+      } else {
+        res.send(err);
+      }
     });
   } else {
     res.send({error: 'Not Authorized'});
@@ -194,8 +193,8 @@ app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
 app.get('/users', function (req, res) {
   if (isAppAuthorized(req.query)) {
 
-    authenticateUser(req, function(authenticated) {
-      if (!authenticated) {
+    authenticateUser(req, res, function(authenticated) {
+      if (authenticated) {
         User.find(function (err, users) {
           if (!err) {
             for (var i=0; i<users.length; i++) {
