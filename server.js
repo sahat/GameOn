@@ -3,7 +3,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
-var RedisStore = require('connect-redis')(express);
+//var RedisStore = require('connect-redis')(express);
 
 var API_KEY = "MYKEY";
 var API_SECRET = 'BANANAS';
@@ -71,7 +71,7 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
 
 ////////// Models //////////
 var Game = mongoose.model('Game', GameSchema);
-var User = mongoose.model('User', UserSchema)
+var User = mongoose.model('User', UserSchema);
 ////////// End Models //////////
 
 ////////// Express //////////
@@ -82,8 +82,6 @@ var app = express();
 app.configure(function () {
   app.set('port', process.env.PORT || 3000);
   app.use(express.bodyParser());
-  app.use(express.cookieParser('s3cr3t'));
-  app.use(express.session({ store: new RedisStore(), secret: 's3cr3t' }));
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -240,8 +238,11 @@ app.get('/games/user/:user_id', function (req, res) {
 
 app.get('/games/nearby/:latitude/:longitude', function (req, res) {
   Game.find({ geo: { $nearSphere: [req.params.longitude, req.params.latitude] } }, function (err, games) {
-    if (err) res.send(err);
-    else res.send(games);
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(games);
+    }
   });
 });
 
@@ -260,8 +261,11 @@ app.delete('/games/:game_id', function (req, res) {
 
 app.get('/games/:game_id', function (req, res){
   return Game.findById(req.params.game_id, function(err, game) {
-    if (err) return res.send(err);
-    else return res.send(game);
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.send(game);
+    }
   });
 });
 
@@ -289,13 +293,3 @@ app.get('/comment/:game_id', function (req, res) {
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
-/*
-/* saved for later use
-// fetch user and test password verification
-
- // test a failing password
- user.comparePassword('123Password', function(err, isMatch) {
- if (err) throw err;
- console.log('123Password:', isMatch); // -> 123Password: false
- });
-*/
