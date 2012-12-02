@@ -105,10 +105,11 @@ app.get('/', function (req, res) {
  * 4b. If good, respond with user object that also includes session token
  */
 
-function isAppAuthorized (query) {
-  var api_key = query['api_key'];
-  var call_id = query['call_id'];
-  var signature = query['signature'];
+function isAppAuthorized (data) {
+
+  var api_key = data.api_key;
+  var call_id = data.call_id;
+  var signature = data.signature;
 
   var sig = crypto.createHash('md5').update(API_SECRET + call_id).digest("hex");
   console.log('My signature:', sig, API_KEY);
@@ -132,7 +133,7 @@ app.post('/login', function (req, res) {
 });
 
 app.post('/signup', function (req, res) {
-  if (isAppAuthorized(req.query)) {
+  if (isAppAuthorized(req.body)) {
     crypto.randomBytes(32, function (ex, buf) {
       var token = buf.toString('hex');
       var user = new User({
