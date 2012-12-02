@@ -89,10 +89,6 @@ app.configure(function () {
 
 ////////// End Express //////////
 
-app.get('/', function (req, res) {
-  console.log(req.session.user);
-  res.send(req.session.user);
-});
 
 ////////// Routes + Controllers //////////
 
@@ -105,17 +101,30 @@ app.get('/', function (req, res) {
  * 4b. If good, respond with user object that also includes session token
  */
 
-function isAppAuthorized (data) {
+function isAppAuthorized(data) {
 
   var api_key = data.api_key;
   var call_id = data.call_id;
   var signature = data.signature;
 
   var sig = crypto.createHash('md5').update(API_SECRET + call_id).digest("hex");
-  console.log('My signature:', sig, API_KEY);
-  console.log('Bilal', api_key, call_id, signature);
-  console.log('====');
+  //console.log('My signature:', sig, API_KEY);
+  //console.log('Bilal', api_key, call_id, signature);
+  //console.log('====');
   return (api_key === API_KEY && sig === signature);
+}
+
+function isAuthenticated(data) {
+  var uid = data.body.uid || data.query.uid;
+  var session_token = data.body.session_token || data.query.session_token;
+
+  User.findOne({ 'email': uid }, function (err, user) {
+    if (!err) {
+     return (user.session_token === session_token);
+    } else {
+      return false;
+    }
+  });
 }
 
 app.post('/login', function (req, res) {
@@ -184,30 +193,33 @@ app.get('/nearby_venues/:latitude/:longitude', function (req, res) {
 /**
  * Request will come with 4 query parameters: session_token, call_id (String),
  * signature (String), uid (userID of whoever is making a request)
- *
  */
 app.get('/users', function (req, res) {
   if (isAppAuthorized(req.query)) {
-    User.find(function (err, users) {
-      if (!err) {
-        for (var i=0; i<users.length; i++) {
-          users[i] = users[i].toObject();
-          delete users[i].password;
+    if (isAuthenticated(req)) {
+      User.find(function (err, users) {
+        if (!err) {
+          for (var i=0; i<users.length; i++) {
+            users[i] = users[i].toObject();
+            delete users[i].password;
+          }
+          res.send(users);
         }
-        return res.send(users);
-      }
-    });
+      });
+    } else {
+      res.send({ error: 'Not Authenticated' })
+    }
   } else {
-    res.send({error: 'Not Authorized'});
+    res.send({ error: 'Not Authorized' });
   }
-
-
 });
 
 app.get('/users/:id', function (req, res) {
   console.log(token);
   return User.findById(req.params.id, function(err, user) {
-    return res.send(user);
+    if (isAppAuthorized(req.query)) {
+      return res.send(user);
+    }
   });
 });
 
