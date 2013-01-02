@@ -25,7 +25,6 @@ module.exports = function(app, authenticate) {
 
   /* Comment Routes */
   app.post('/comments', authenticate.key, authenticate.user, comments.create);
-  app.delete('/comments/:game_id', authenticate.key, authenticate.user, comments.delete);
+  app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete);
   app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get);
-
 };
