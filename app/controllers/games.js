@@ -1,28 +1,36 @@
+// Load Models
 var Game = require('./models/game');
 var User = require('./models/user');
 
-exports.get = function (req, res) {
+// Get a specific game
+exports.get_game = function (req, res) {
   Game.findById(req.params.game_id, function(err, game) {
     res.send(err || game);
   });
 };
 
+// Get all games
 exports.get_all = function(req, res) {
   Game.find(function (err, games) {
     res.send(err || games);
   });
 };
 
+// Get games near a latitude and longitude
 exports.nearby = function (req, res) {
   Game.find(
-    { geo: { $nearSphere: [req.params.longitude, req.params.latitude] } },
+    { geo: { $nearSphere: [req.query.longitude, req.query.latitude] } },
     function (err, games) {
       res.send(err || games);
     }
   );
 };
 
+// Get all games that this user has joined
 exports.user = function (req, res) {
+  Game
+  .where(req.params.user_id)
+  .in('players');
 };
 
 exports.join = function (req, res) {

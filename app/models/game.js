@@ -1,15 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.Types.ObjectId;
 
-var GameSchema = new mongoose.Schema({
+var GameSchema = new Schema({
   sport: String,
   geo: { type: [Number], index: '2d' },
-  players:[User],
+  players:[{ type: ObjectId, ref: 'User' }],
   description: String,
-  created_by: String,
-  //created_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  created_by: { type: ObjectId, ref: 'User' },
   created_on: { type: Date, default: Date.now },
-  comments: [{ user: { type: Schema.Types.ObjectId, ref: 'User' }, body: String, date: Date }]
+  comments: [{ user: { type: ObjectId, ref: 'User' }, body: String, date: Date }]
 });
 
 mongoose.model('Game', GameSchema);
