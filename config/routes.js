@@ -18,7 +18,7 @@ module.exports = function(app, authenticate) {
   app.get('/games/user/:user_id', authenticate.key, authenticate.user, games.user);
   app.get('/games/nearby', authenticate.key, authenticate.user, games.nearby);
   app.get('/games/:game_id', authenticate.key, games.get);
-  app.put('/games/:game_id', authenticate.key, authenticate.user, games.join);
+  app.put('/games/:game_id', authenticate.key, authenticate.user, games.edit);
   app.del('/games/:game_id', authenticate.key, authenticate.user, games.delete);
   app.get('/games', authenticate.key, authenticate.user, games.get_all);
 
