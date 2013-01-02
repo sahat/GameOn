@@ -1,14 +1,14 @@
-var mongoose = require('mongoose'),
-User = mongoose.model('User');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 
 
 exports.get_user = function (req, res) {
-  User.findById(req.params.id, function(err, user) {
+  User.findById(req.params.id, function (err, user) {
     if (err) {
       res.send(err);
-    } else {
-      res.send(user);
+      return;
     }
+    res.send(user);
   });
 };
 

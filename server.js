@@ -3,6 +3,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
+
 //var RedisStore = require('connect-redis')(express);
 
 var API_KEY = "MYKEY";
@@ -56,8 +57,8 @@ UserSchema.pre('save', function (next) {
   });
 });
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
        cb(err);
     }
@@ -123,7 +124,6 @@ function authenticateUser(req, res, cb) {
     } else {
       res.send({error: 'User not found'});
     }
-
   });
 }
 
@@ -295,12 +295,15 @@ app.get('/games', function (req, res) {
 app.post('/comment', function (req, res) {
 
 });
+
 app.delete('/comment/:game_id', function (req, res) {
 
 });
+
 app.get('/comment/:game_id', function (req, res) {
 
 });
+
 ////////// End Routes + Controllers //////////
 
 app.listen(app.get('port'), function() {
