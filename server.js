@@ -1,11 +1,11 @@
 var request = require('request');
 var express = require('express');
 var mongoose = require('mongoose');
+var config = require('./config/config');
+var auth = require('./config/middlewares/authenticate');
 
 var app = express();
 
-var config = require('./config/config');
-var auth = require('./config/middlewares/authenticate')
 
 // DB Connection
 mongoose.connect(config.db);
