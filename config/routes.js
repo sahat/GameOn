@@ -9,7 +9,7 @@ module.exports = function(app, authenticate) {
   app.post('/signup', authenticate.key, users.register);
   app.post('/login', authenticate.key, users.login);
   app.get('/users', authenticate.key, authenticate.user, users.get_all);
-  app.get('/users/:id', authenticate.key, authenticate.user, users.get);
+  app.get('/users/:id', authenticate.key, authenticate.user, users.get_user);
 
 
   /* Games Routes */
@@ -17,8 +17,9 @@ module.exports = function(app, authenticate) {
   app.post('/games/join', authenticate.key, authenticate.user, games.join);
   app.get('/games/user/:user_id', authenticate.key, authenticate.user, games.user);
   app.get('/games/nearby/:latitude/:longitude', authenticate.key, authenticate.user, games.nearby);
-  app.delete('/games/:game_id', authenticate.key, authenticate.user, games.delete);
-  app.get('/games/:game_id', authenticate.key, authenticate.user, games.get);
+  app.get('/games/:game_id', authenticate.key, games.get);
+  app.put('/games/:game_id', authenticate.key, authenticate.user, games.join);
+  app.del('/games/:game_id', authenticate.key, authenticate.user, games.delete);
   app.get('/games', authenticate.key, authenticate.user, games.get_all);
 
 
