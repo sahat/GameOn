@@ -1,6 +1,8 @@
 // Load Models
+var mongoose = require('mongoose');
 var Game = require('./models/game');
 var User = require('./models/user');
+
 
 // Get a specific game
 exports.get_game = function (req, res) {
@@ -9,12 +11,14 @@ exports.get_game = function (req, res) {
   });
 };
 
+
 // Get all games
 exports.get_all = function(req, res) {
   Game.find(function (err, games) {
     res.send(err || games);
   });
 };
+
 
 // Get games near a latitude and longitude
 exports.nearby = function (req, res) {
@@ -26,16 +30,29 @@ exports.nearby = function (req, res) {
   );
 };
 
+
 // Get all games that this user has joined
 exports.user = function (req, res) {
   Game
-  .where(req.params.user_id)
-  .in('players');
+    .find()
+    .where( mongoose.Types.ObjectId(req.params.user_id) ).in('players')
+    .populate('players')
+    .exec(function (err, games) {
+      res.send(err || games);
+    });
 };
 
+
+// Have a user join a game
 exports.join = function (req, res) {
 };
 
+// Have a user leave a game
+exports.leave = function (req, res) {
+};
+
+
+// Create a new game
 exports.create = function (req, res) {
   var game = new Game({
     created_by: "Sahat",
@@ -51,9 +68,13 @@ exports.create = function (req, res) {
   });
 };
 
+
+// Edit a game
 exports.edit = function (req, res) {
 };
 
+
+// Delete a game
 exports.delete = function (req, res) {
   Game.findById(req.params.game_id, function (err, game) {
     game.remove(function (err) {
