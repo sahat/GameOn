@@ -3,6 +3,8 @@ var users = '../app/controllers/users';
 var games = '../app/controllers/games';
 var comments = '../app/controllers/comments';
 
+var authenticate = require('./middlewares/authenticate');
+
 module.exports = function(app, authenticate) {
 
   /* Users Routes */
