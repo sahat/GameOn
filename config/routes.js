@@ -5,7 +5,7 @@ var comments = '../app/controllers/comments';
 
 var authenticate = require('./middlewares/authenticate');
 
-module.exports = function(app, authenticate) {
+module.exports = function(app) {
 
   /* Users Routes */
   app.post('/signup', authenticate.key, users.register);
