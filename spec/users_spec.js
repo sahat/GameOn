@@ -28,8 +28,12 @@ describe('user registration process', function() {
   });
 
   it('should create a new user', function(done){
-    request.post('http://localhost:3000/register' + querystr, user, function(error, response, body) {
+    request.post('http://localhost:3000/register' + querystr, {form: user}, function(error, response, body) {
+      console.log('error:');
+      console.log(error);
+      console.log('body:');
       console.log(body);
+      console.log('user:');
       console.log(typeof user);
       //User.find(function(users) {
       // console.log(users);

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
 
 // User schema definition
 var UserSchema = new mongoose.Schema({
@@ -8,7 +9,7 @@ var UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   avatar: String,
   bio: String,
-  token: String,
+  token: {type: String, required: true},
   created_on: { type: Date, default: Date.now }
 });
 

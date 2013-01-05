@@ -3,7 +3,6 @@ var request = require('request');
 var express = require('express');
 var mongoose = require('mongoose');
 var config = require('./config/config');
-var authenticate = require('./config/middlewares/authenticate');
 
 
 // Initialize Application
@@ -24,6 +23,7 @@ app.configure(function () {
 });
 
 
+var authenticate = require('./config/middlewares/authenticate');
 // Routes
 require('./config/routes')(app, authenticate);
 
