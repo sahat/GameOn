@@ -24,7 +24,7 @@ describe('user registration process', function() {
   });
 
   afterEach(function() {
-    foo = 0;
+    foo = 011;
   });
 
   it('should create a new user', function(done){

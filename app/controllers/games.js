@@ -54,7 +54,8 @@ exports.join = function(req, res) {
     } else if (game) {
       game
       .populate('players')
-      .populate(comments)
+      .populate('comments')
+      .populate('comments.user')
       .exec(function(err, updated_game) {
         res.send(updated_game);
       });
