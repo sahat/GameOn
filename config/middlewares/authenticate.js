@@ -22,7 +22,7 @@ exports.user = function(req, res, next){
   var uid = req.body.uid || req.query.uid;
   var token = req.body.token || req.query.token;
 
-  User.findById(mongoose.types.ObjectId(uid), function (err, user) {
+  User.findById(mongoose.Types.ObjectId(uid), function (err, user) {
     if (!err && user) {
       next();
     } else {
