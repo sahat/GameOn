@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
+
+// Game schema defintion
 var GameSchema = new Schema({
   sport: String,
   geo: { type: [Number], index: '2d' },
@@ -12,4 +14,5 @@ var GameSchema = new Schema({
   comments: [{ user: { type: ObjectId, ref: 'User' }, body: String, date: Date }]
 });
 
-mongoose.model('Game', GameSchema);
+
+module.exports = mongoose.model('Game', GameSchema);

@@ -1,20 +1,18 @@
-/* Load Controllers */
-var users = '../app/controllers/users';
-var games = '../app/controllers/games';
-var comments = '../app/controllers/comments';
-
-var authenticate = require('./middlewares/authenticate');
+// Load Controllers
+var users = require('../app/controllers/users');
+var games = require('../app/controllers/games');
+var comments = require('../app/controllers/comments');
 
 module.exports = function(app, authenticate) {
 
-  /* Users Routes */
+  // Users Routes
   app.post('/signup', authenticate.key, users.register);
   app.post('/login', authenticate.key, users.login);
   app.get('/users', authenticate.key, authenticate.user, users.get_all);
   app.get('/users/:id', authenticate.key, authenticate.user, users.get_user);
 
 
-  /* Games Routes */
+  // Games Routes
   app.post('/games', authenticate.key, authenticate.user, games.create);
   app.post('/games/join', authenticate.key, authenticate.user, games.join);
   app.post('/games/leave', authenticate.key, authenticate.user, games.join);
@@ -26,8 +24,9 @@ module.exports = function(app, authenticate) {
   app.get('/games', authenticate.key, authenticate.user, games.get_all);
 
 
-  /* Comment Routes */
+  // Comments Routes
   app.post('/comments', authenticate.key, authenticate.user, comments.create);
   app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete);
   app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get);
+
 };
