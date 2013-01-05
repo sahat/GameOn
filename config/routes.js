@@ -3,7 +3,7 @@ var users = require('../app/controllers/users');
 var games = require('../app/controllers/games');
 var comments = require('../app/controllers/comments');
 
-module.exports = function(app) {
+module.exports = function(app, authenticate) {
 
   // Users Routes
   app.post('/signup', authenticate.key, users.register);

@@ -1,7 +1,7 @@
 // Load Models
 var mongoose = require('mongoose');
-var Game = require('./models/game');
-var User = require('./models/user');
+var Game = require('../models/game');
+var User = require('../models/user');
 
 
 // Get a specific game
