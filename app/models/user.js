@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+// User schema definition
 var UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
@@ -10,6 +11,8 @@ var UserSchema = new mongoose.Schema({
   created_on: { type: Date, default: Date.now }
 });
 
+
+// Pre save function
 UserSchema.pre('save', function (next) {
   var user = this;
 
@@ -37,15 +40,17 @@ UserSchema.pre('save', function (next) {
   });
 });
 
+
+// Compare passwords method
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
     if (err) {
       cb(err);
     }
     else {
-      cb (null, isMatch);
+      cb(null, isMatch);
     }
   });
 };
 
-mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema);

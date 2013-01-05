@@ -1,17 +1,18 @@
 var config = require('./config/config');
+var User = require('../../app/models/user');
 
 
 exports.key = function (req, res){
-  var api_key = req.body.api_key;
-  var call_id = req.body.call_id;
-  var signature = req.body.signature;
+  var api_key = req.query.api_key;
+  var call_id = req.query.call_id;
+  var signature = req.query.signature;
 
-  var sig = crypto.createHash('md5').update(config.gameon.APIKEY + call_id).digest("hex");
+  var sig = crypto.createHash('md5').update(config.gameon.API_KEY + call_id).digest("hex");
 
   if (api_key === config.gameon.API_KEY && sig === signature) {
     next();
   } else {
-    res.send({ error: 'User not authorized' });
+    res.send(403, { error: 'You are not authorized to make requests from this server.' });
   }
 };
 
@@ -24,7 +25,7 @@ exports.user = function(req, res){
     if (!err && user) {
       next();
     } else {
-      res.send({error: 'User not found'});
+      res.send(401, {error: 'Authentication required'});
     }
   });
 };

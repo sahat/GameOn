@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
-
+// Get a specific User
 exports.get_user = function (req, res) {
   User.findById(req.params.id, function (err, user) {
     if (err) {
@@ -13,6 +13,7 @@ exports.get_user = function (req, res) {
 };
 
 
+// Get all users
 exports.get_all = function (req, res) {
   User.find()
   .exclude('password')
@@ -26,6 +27,7 @@ exports.get_all = function (req, res) {
 };
 
 
+// Register a user
 exports.register = function (req, res) {
   var user = new User({
     name: req.body.name,
@@ -48,6 +50,7 @@ exports.register = function (req, res) {
 };
 
 
+// Login a user and retrieve his data
 exports.login = function (req, res) {
   User.findOne({ email: req.body.email }, function (err, user) {
     user.comparePassword(req.body.password, function (err, isMatch) {

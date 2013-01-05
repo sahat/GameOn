@@ -1,13 +1,18 @@
+// Require libraries
 var request = require('request');
 var express = require('express');
 var mongoose = require('mongoose');
+var config = require('./config/config');
+var authenticate = require('./middlewares/authenticate');
 
+
+// Initialize Application
 var app = express();
 
-var config = require('./config/config');
 
 // DB Connection
 mongoose.connect(config.db);
+
 
 // Express Configuration
 app.configure(function () {
@@ -18,9 +23,12 @@ app.configure(function () {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-// Routes
-require('./config/routes')(app);
 
+// Routes
+require('./config/routes')(app, authenticate);
+
+
+// Listen on Port
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
