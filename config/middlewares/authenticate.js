@@ -12,7 +12,7 @@ exports.key = function (req, res){
   if (api_key === config.gameon.API_KEY && sig === signature) {
     next();
   } else {
-    res.send(401, { error: 'User not authorized' });
+    res.send(403, { error: 'You are not authorized to make requests from this server.' });
   }
 };
 
@@ -25,7 +25,7 @@ exports.user = function(req, res){
     if (!err && user) {
       next();
     } else {
-      res.send(401, {error: 'User not found'});
+      res.send(401, {error: 'Authentication required'});
     }
   });
 };
