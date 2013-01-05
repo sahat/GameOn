@@ -8,6 +8,7 @@ var UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   avatar: String,
   bio: String,
+  token: String,
   created_on: { type: Date, default: Date.now }
 });
 

@@ -6,7 +6,7 @@ module.exports = {
     CALLBACK_URL: "http://gameon.com/callback"
   },
   gameon: {
-    API_KEY: 'myapikey',
-    API_SECRET: '12345'
+    API_KEY: 'gameon',
+    API_SECRET: 'secret'
   }
 };

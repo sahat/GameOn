@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 var config = require('../config');
 var User = require('../../app/models/user');
-var mongoose = require('mongoose);
+var mongoose = require('mongoose');
 
 exports.key = function (req, res, next){
   var api_key = req.query.api_key;

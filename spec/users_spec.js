@@ -1,28 +1,42 @@
+var request = require('request');
+var crypto = require('crypto');
+var mongoose = require('mongoose');
+var User = require('../app/models/user');
+
+
 describe('user registration process', function() {
 
-  it('should create a new user', function(){
-    request("http://localhost:3000/hello", function(error, response, body){
-        expect(body).toEqual("hello world");
-        done();
-      });
+  beforeEach(function() {
+    user = {
+      name: 'Sahat Yalkabov',
+      email: 'sakhat@gmail.com',
+      password: 'ASDF1!@#$',
+      avatar: 'http://avatar.com/avatar.png',
+      bio: 'Lives in New Jersey. Web Dev.',
+      token: 'snoumh67eg8tb87g'
+    };
+
+    api_secret = 'secret';
+    call_id = '007';
+    api_key = 'gameon';
+    signature = crypto.createHash('md5').update(api_secret + call_id).digest("hex");
+    querystr = '?api_key='+api_key+'&call_id='+call_id+'&signature='+signature;
   });
 
-  it('shows asynchronous test', function() {
-    setTimeout(function(){
-      expect('second').toEqual('second');
-      asyncSpecDone();
-    }, 1);
-    expect('first').toEqual('first');
-    asyncSpecWait();
+  afterEach(function() {
+    foo = 0;
   });
 
-  it('shows asynchronous test node-style', function(done){
-    setTimeout(function(){
-      expect('second').toEqual('second');
-      // If you call done() with an argument, it will fail the spec
-      // so you can use it as a handler for many async node calls
+  it('should create a new user', function(done){
+    request.post('http://localhost:3000/register' + querystr, user, function(error, response, body) {
+      console.log(body);
+      console.log(typeof user);
+      //User.find(function(users) {
+      // console.log(users);
+      //});
       done();
-    }, 1);
-    expect('first').toEqual('first');
+    });
   });
+
+  // user count
 });

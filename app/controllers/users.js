@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var User = mongoose.model('User');
+var User = require('../models/user');
 
 // Get a specific User
 exports.get_user = function (req, res) {
@@ -34,7 +34,8 @@ exports.register = function (req, res) {
     email: req.body.email,
     password: req.body.password,
     avatar: req.body.avatar,
-    bio: req.body.bio
+    bio: req.body.bio,
+    token: req.body.token
   });
 
   user.save(function (err) {
