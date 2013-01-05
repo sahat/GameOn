@@ -21,7 +21,7 @@ exports.get_all = function(req, res) {
 
 
 // Get games near a latitude and longitude
-exports.nearby = function (req, res) {
+exports.nearby = function(req, res) {
   Game.find(
     { geo: { $nearSphere: [req.query.longitude, req.query.latitude] } },
     function (err, games) {
@@ -32,28 +32,45 @@ exports.nearby = function (req, res) {
 
 
 // Get all games that this user has joined
-exports.user = function (req, res) {
+exports.user = function(req, res) {
   Game
-    .find()
-    .where( mongoose.Types.ObjectId(req.params.user_id) ).in('players')
-    .populate('players')
-    .exec(function (err, games) {
-      res.send(err || games);
-    });
+  .find()
+  .where( mongoose.Types.ObjectId(req.params.user_id) ).in('players')
+  .populate('players')
+  .exec(function (err, games) {
+    res.send(err || games);
+  });
 };
 
 
 // Have a user join a game
-exports.join = function (req, res) {
+exports.join = function(req, res) {
+  var game_id = mongoose.Types.ObjectId(req.params.game_id);
+  var user_id = mongoose.Types.ObjectId(req.params.user_id);
+
+  Game.findByIdAndUpdate(game_id, { $push: { players: user_id } }, function(err, game) {
+    if (err) {
+      res.send(500, {error: 'Internal server error has occurred'});
+    } else if (game) {
+      game
+      .populate('players')
+      .populate(comments)
+      .exec(function(err, updated_game) {
+        res.send(updated_game);
+      });
+    } else {
+      res.send(403, {error: 'The game you are trying to join no longer appears to exist'});
+    }
+  });
 };
 
 // Have a user leave a game
-exports.leave = function (req, res) {
+exports.leave = function(req, res) {
 };
 
 
 // Create a new game
-exports.create = function (req, res) {
+exports.create = function(req, res) {
   var game = new Game({
     created_by: "Sahat",
     sport: req.body.sport,
@@ -70,12 +87,12 @@ exports.create = function (req, res) {
 
 
 // Edit a game
-exports.edit = function (req, res) {
+exports.edit = function(req, res) {
 };
 
 
 // Delete a game
-exports.delete = function (req, res) {
+exports.delete = function(req, res) {
   Game.findById(req.params.game_id, function (err, game) {
     game.remove(function (err) {
       res.send(err || {message: "Game successfully removed"});
