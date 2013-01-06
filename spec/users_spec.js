@@ -27,7 +27,7 @@ describe('user registration process', function() {
     foo = 011;
   });
 
-  it('should create a new user', function(done){
+  xit('should create a new user', function(done){
     request.post('http://localhost:3000/register' + querystr, {form: user}, function(error, response, body) {
       console.log('error:');
       console.log(error);

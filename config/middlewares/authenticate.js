@@ -12,6 +12,7 @@ exports.key = function (req, res, next){
 
   if (api_key === config.gameon.API_KEY && sig === signature) {
     next();
+    console.log('AUTHORIZATION SUCCESSFUL');
   } else {
     res.send(403, { error: 'You are not authorized to make requests from this server.' });
   }
@@ -21,9 +22,10 @@ exports.key = function (req, res, next){
 exports.user = function(req, res, next){
   var uid = req.body.uid || req.query.uid;
   var token = req.body.token || req.query.token;
-
+  console.log(uid);
   User.findById(mongoose.Types.ObjectId(uid), function (err, user) {
     if (!err && user) {
+      console.log('200: AUTHENTICATION SUCCESSFUL');
       next();
     } else {
       res.send(401, {error: 'Authentication required'});

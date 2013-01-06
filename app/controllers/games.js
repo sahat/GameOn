@@ -73,15 +73,19 @@ exports.leave = function(req, res) {
 // Create a new game
 exports.create = function(req, res) {
   var game = new Game({
-    created_by: "Sahat",
+    created_by: req.body.created_by,
     sport: req.body.sport,
-    geo: [req.body.latitude, req.body.longitude],
-    description: req.body.description
+    geo: req.body.geo,
+    description: req.body.description,
   });
 
-  game.players.push('Sahat');
+  game.players.push({
+    user: mongoose.Types.ObjectId('50e8aafee27c60eb37000003'),
+    joined_on: new Date()
+  });
 
   game.save(function (err) {
+    console.log('200: Game Created');
     res.send(err || game);
   });
 };

@@ -13,7 +13,7 @@ module.exports = function(app, authenticate) {
 
 
   // Games Routes
-  app.post('/games', authenticate.key, authenticate.user, games.create);
+  app.post('/games/create', authenticate.key, authenticate.user, games.create);
   app.post('/games/join', authenticate.key, authenticate.user, games.join);
   app.post('/games/leave', authenticate.key, authenticate.user, games.join);
   app.get('/games/user/:user_id', authenticate.key, authenticate.user, games.user);
