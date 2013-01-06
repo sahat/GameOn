@@ -5,6 +5,7 @@ var comments = require('../app/controllers/comments');
 
 module.exports = function(app, authenticate) {
 
+
   // Users Routes
   app.post('/register', authenticate.key, users.register);
   app.post('/login', authenticate.key, users.login);

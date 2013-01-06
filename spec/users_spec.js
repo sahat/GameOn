@@ -23,10 +23,6 @@ describe('user registration process', function() {
     querystr = '?api_key='+api_key+'&call_id='+call_id+'&signature='+signature;
   });
 
-  afterEach(function() {
-    foo = 011;
-  });
-
   xit('should return json user object on registration success', function(done){
     request.post('http://localhost:3000/register' + querystr, { form: user }, function(error, response, body) {
       expect(body).toEqual(jasmine.any(Object));

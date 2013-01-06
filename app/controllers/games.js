@@ -45,18 +45,18 @@ exports.user = function(req, res) {
 
 // Have a user join a game
 exports.join = function(req, res) {
-  var game_id = mongoose.Types.ObjectId(req.body.game_id)
-  var user_id = mongoose.Types.ObjectId(req.body.user_id);
+  var game_id = mongoose.Types.ObjectId(req.params.game_id);
+  var user_id = mongoose.Types.ObjectId(req.params.user_id);
 
-  Game.findByIdAndUpdate(game_id, { $push: { 'players': user_id } }, function(error, game) {
-    if (error) {
-      res.send({ code: 500, message: error });
+  Game.findByIdAndUpdate(game_id, { $push: { players: user_id } }, function(err, game) {
+    if (err) {
+      res.send(500, {error: 'Internal server error has occurred'});
     } else if (game) {
       game
       .populate('players')
       .populate('comments')
       .populate('comments.user')
-        .exec(function(err, updated_game) {
+      .exec(function(err, updated_game) {
         res.send(updated_game);
       });
     } else {
@@ -98,9 +98,13 @@ exports.edit = function(req, res) {
 
 // Delete a game
 exports.delete = function(req, res) {
-  Game.findById(req.params.game_id, function(err, game) {
-    game.remove(function(err) {
-      res.send(err || {message: "200: Game successfully removed"});
-    });
+  Game.findOne({ '_id': req.body.game_id }, function(error, game) {
+    if (!game) {
+      res.send({ 'code': 404, 'message': 'Game you are trying to delete is not found.' });
+    } else {
+      game.remove(function (error) {
+        res.send(error || { message: "Game successfully removed" });
+      });
+    }
   });
 };

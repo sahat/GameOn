@@ -23,7 +23,10 @@ app.configure(function () {
 });
 
 
+// Middleware
 var authenticate = require('./config/middlewares/authenticate');
+
+
 // Routes
 require('./config/routes')(app, authenticate);
 
