@@ -27,17 +27,9 @@ describe('user registration process', function() {
     foo = 011;
   });
 
-  xit('should create a new user', function(done){
-    request.post('http://localhost:3000/register' + querystr, {form: user}, function(error, response, body) {
-      console.log('error:');
-      console.log(error);
-      console.log('body:');
-      console.log(body);
-      console.log('user:');
-      console.log(typeof user);
-      //User.find(function(users) {
-      // console.log(users);
-      //});
+  xit('should return json user object on registration success', function(done){
+    request.post('http://localhost:3000/register' + querystr, { form: user }, function(error, response, body) {
+      expect(body).toEqual(jasmine.any(Object));
       done();
     });
   });
