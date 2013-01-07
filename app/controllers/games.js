@@ -50,7 +50,7 @@ exports.join = function(req, res) {
 
   Game.findByIdAndUpdate(game_id, { $push: { players: user_id } }, function(err, game) {
     if (err) {
-      res.send(500, {error: 'Internal server error has occurred'});
+      res.send({'status': 500, 'msg': 'Internal server error has occurred' });
     } else if (game) {
       game
       .populate('players')
@@ -60,7 +60,7 @@ exports.join = function(req, res) {
         res.send(updated_game);
       });
     } else {
-      res.send(403, {error: 'The game you are trying to join no longer appears to exist'});
+      res.send({'status': 403, 'msg': 'The game you are trying to join no longer appears to exist'});
     }
   });
 };
@@ -100,10 +100,10 @@ exports.edit = function(req, res) {
 exports.delete = function(req, res) {
   Game.findOne({ '_id': req.body.game_id }, function(error, game) {
     if (!game) {
-      res.send({ 'code': 404, 'message': 'Game you are trying to delete is not found.' });
+      res.send({ 'status': 404, 'msg': 'Game you are trying to delete is not found.' });
     } else {
       game.remove(function (error) {
-        res.send(error || { message: "Game successfully removed" });
+        res.send(error || { 'msg': "Game successfully removed", 'game': game });
       });
     }
   });
