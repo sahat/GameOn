@@ -5,15 +5,15 @@ var User = require('../models/user');
 
 
 // Get a specific game
-exports.get_game = function (req, res) {
-  Game.findById(req.params.game_id, function(err, game) {
+exports.get_a_game = function(req, res) {
+  Game.findOne(req.params.game_id, function(err, game) {
     res.send(err || game);
   });
 };
 
 
 // Get all games
-exports.get_all = function(req, res) {
+exports.get_all_games = function(req, res) {
   Game.find(function (err, games) {
     res.send(err || games);
   });
@@ -22,14 +22,11 @@ exports.get_all = function(req, res) {
 
 // Get games near a latitude and longitude
 exports.nearby = function(req, res) {
-  Game.find(
-    { geo: { $nearSphere: [req.query.longitude, req.query.latitude] } },
-    function (err, games) {
+  Game.find({ geo: { $nearSphere: [req.query.longitude, req.query.latitude] } }, function (err, games) {
       res.send(err || games);
     }
   );
 };
-
 
 // Get all games that this user has joined
 exports.user = function(req, res) {
