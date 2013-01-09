@@ -122,9 +122,29 @@ exports.create = function(req, res) {
 };
 
 
+//date, location, description, maxplayers
 // Edit a game
 exports.edit = function(req, res) {
-  // s
+
+  Game.findById(req.query.game_id, function(err, game) {
+    if (err) {
+      res.send(500, err);
+    } else if (game) {
+      game.game_date = req.body.game_date;
+      game.geo = req.body.geo;
+      game.description = req.body.description;
+      game.max_players = req.body.max_players;
+      game.save(function(err) {
+        if (err) {
+          res.send(500, err);
+        } else {
+          res.send({ message: 'The game has been updated' });
+        }
+      });
+    } else {
+      res.send(404, { message: 'The game you are trying to update no longer exists' });
+    }
+  });
 };
 
 
@@ -132,13 +152,9 @@ exports.edit = function(req, res) {
 exports.delete = function(req, res) {
   Game.remove({ '_id': req.body.game_id }, function(err) {
     if (err) {
-
-    } else if (game) {
-      game.remove(function (error) {
-        res.send({ message: "Game has been removed", 'game': game });
-      });
+      res.send(500, err);
     } else {
-      res.send({ 'status': 404, 'msg': 'Game you are trying to delete is not found.' });
+      res.send({ message: "The game has been deleted" });
     }
   });
 };

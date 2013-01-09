@@ -8,7 +8,9 @@ var GameSchema = new Schema({
   sport: String,
   geo: { type: [Number], index: '2d' },
   players:[ {user: { type: ObjectId, ref: 'User' }, joined_on: Date } ],
-  description: String,
+  max_layers: { type: Number, required: true, min: 2, max: 40 },
+  game_date: { type: Number, required: true },
+  description: { type: String, max: 140, trim: true },
   created_by: { type: ObjectId, ref: 'User' },
   created_on: { type: Date, default: Date.now },
   comments: [ { type: ObjectId, ref: 'Comment' } ]
