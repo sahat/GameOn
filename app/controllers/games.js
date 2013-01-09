@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Game = require('../models/game');
 var User = require('../models/user');
 
+var ObjectId = mongoose.Types.ObjectId;
 
 // Get a specific game
 exports.get_a_game = function(req, res) {
@@ -105,10 +106,13 @@ exports.create = function(req, res) {
     sport: req.body.sport,
     geo: req.body.geo,
     description: req.body.description,
+    players: [{
+      user: mongoose.types.bjectId(req.body.user_id),
+      joined_on: Date.now()
+    }]
   });
 
   game.players.push({
-    user: mongoose.Types.ObjectId('50e8aafee27c60eb37000003'),
     joined_on: new Date()
   });
 
@@ -130,10 +134,10 @@ exports.edit = function(req, res) {
     if (err) {
       res.send(500, err);
     } else if (game) {
-      game.game_date = req.body.game_date;
-      game.geo = req.body.geo;
-      game.description = req.body.description;
-      game.max_players = req.body.max_players;
+      game.game_date = req.body.game_date || game.game_date;
+      game.geo = req.body.geo || game.geo;
+      game.description = req.body.description || game.description;
+      game.max_players = req.body.max_players || game.max_players;
       game.save(function(err) {
         if (err) {
           res.send(500, err);

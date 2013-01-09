@@ -4,8 +4,13 @@ var ObjectId = Schema.Types.ObjectId;
 
 
 // Game schema defintion
+var sports = [
+  'soccer', 'basketball', 'football',
+  'baseball', 'volleyball', 'hockey',
+  'tennis', 'paintball'
+];
 var GameSchema = new Schema({
-  sport: String,
+  sport: { type: String, required: true, enum: sports },
   geo: { type: [Number], index: '2d' },
   players:[ {user: { type: ObjectId, ref: 'User' }, joined_on: Date } ],
   max_layers: { type: Number, required: true, min: 2, max: 40 },
