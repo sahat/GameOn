@@ -6,24 +6,38 @@ var User = require('../models/user');
 
 // Get a specific game
 exports.get_a_game = function(req, res) {
-  Game.findOne(req.params.game_id, function(err, game) {
-    res.send(err || game);
+  Game.findById(req.params.game_id, function(err, game) {
+    if (err) {
+      res.send(500, err);
+    } else if (game) {
+      res.send(game)
+    } else {
+      res.send(404, { message: 'Game not found' });
+    }
   });
 };
 
 
 // Get all games
 exports.get_all_games = function(req, res) {
-  Game.find(function (err, games) {
-    res.send(err || games);
+  Game.find(function(err, games) {
+    if (err) {
+      res.send(500, err);
+    } else {
+      res.send(games);
+    }
   });
 };
 
 
 // Get games near a latitude and longitude
 exports.nearby = function(req, res) {
-  Game.find({ geo: { $nearSphere: [req.query.longitude, req.query.latitude] } }, function (err, games) {
-      res.send(err || games);
+  var area = [req.query.longitude, req.query.latitude];
+  Game.find({ geo: { $nearSphere: area } }, function(err, games) {
+      if (err) {
+        res.send(500, err);
+      } else
+        res.send(games);
     }
   );
 };
@@ -31,11 +45,14 @@ exports.nearby = function(req, res) {
 // Get all games that this user has joined
 exports.user = function(req, res) {
   Game
-  .find()
-  .where( mongoose.Types.ObjectId(req.params.user_id) ).in('players')
+  .where(req.params.user_id).in('players')
   .populate('players')
-  .exec(function (err, games) {
-    res.send(err || games);
+  .exec(function(err, games) {
+    if (err) {
+      res.send(500, err);
+    } else {
+      res.send(games);
+    }
   });
 };
 

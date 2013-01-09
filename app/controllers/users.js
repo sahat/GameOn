@@ -16,18 +16,16 @@ exports.get_user = function(req, res) {
 
 
 // Get all users
-exports.get_all = function (req, res) {
+exports.get_all = function(req, res) {
   User
   .find()
   .exclude('password')
   .exec(function(err, users) {
     if (err) {
       res.send(500, err)
-    } else if (users) {
-      res.send(users);
     } else {
-      res.send(404, users);
-      }
+      res.send(users);
+    }
   });
 };
 
@@ -74,7 +72,5 @@ exports.login = function (req, res) {
     } else {
       res.send(404, { message: 'User not found' });
     }
-
-
   });
 };
