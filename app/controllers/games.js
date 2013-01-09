@@ -126,7 +126,6 @@ exports.create = function(req, res) {
 };
 
 
-//date, location, description, maxplayers
 // Edit a game
 exports.edit = function(req, res) {
 

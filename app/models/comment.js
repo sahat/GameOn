@@ -5,8 +5,8 @@ var ObjectId = Schema.Types.ObjectId;
 // Comment schema definition
 var CommentSchema = new Schema({
   user: { type: ObjectId, ref: 'User' },
-  body: String,
-  date: Date
+  text: { type: String, required: true, max: 255 },
+  date: { type: Date, default: Date.now() }
 });
 
 

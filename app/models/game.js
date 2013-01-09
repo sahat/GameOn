@@ -17,7 +17,7 @@ var GameSchema = new Schema({
   game_date: { type: Number, required: true },
   description: { type: String, max: 140, trim: true },
   created_by: { type: ObjectId, ref: 'User' },
-  created_on: { type: Date, default: Date.now },
+  created_on: { type: Date, default: Date.now() },
   comments: [ { type: ObjectId, ref: 'Comment' } ]
 });
 
