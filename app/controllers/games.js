@@ -42,6 +42,7 @@ exports.nearby = function(req, res) {
   );
 };
 
+
 // Get all games that this user has joined
 exports.user = function(req, res) {
   Game
@@ -59,12 +60,9 @@ exports.user = function(req, res) {
 
 // Have a user join a game
 exports.join = function(req, res) {
-  var game_id = mongoose.Types.ObjectId(req.params.game_id);
-  var user_id = mongoose.Types.ObjectId(req.params.user_id);
-
-  Game.findByIdAndUpdate(game_id, { $push: { players: user_id } }, function(err, game) {
+  Game.findByIdAndUpdate(req.query.game_id, { $push: { players: req.query.user_id } }, function(err, game) {
     if (err) {
-      res.send({'status': 500, 'msg': 'Internal server error has occurred' });
+      res.send(500, err);
     } else if (game) {
       game
       .populate('players')
@@ -74,13 +72,29 @@ exports.join = function(req, res) {
         res.send(updated_game);
       });
     } else {
-      res.send({'status': 403, 'msg': 'The game you are trying to join no longer appears to exist'});
+      res.send(404, { message: 'The game you are trying to join no longer exists' });
     }
   });
 };
 
+
 // Have a user leave a game
 exports.leave = function(req, res) {
+  Game.findByIdAndUpdate(req.query.game_id, { $pull: { players: req.query.user_id } }, function(err, game) {
+    if (err) {
+      res.send(500, err);
+    } else if (game) {
+      game
+        .populate('players')
+        .populate('comments')
+        .populate('comments.user')
+        .exec(function(err, updated_game) {
+          res.send(updated_game);
+        });
+    } else {
+      res.send(404, { message: 'The game you are trying to join no longer exists' });
+    }
+  });
 };
 
 
@@ -99,26 +113,32 @@ exports.create = function(req, res) {
   });
 
   game.save(function (err) {
-    console.log('200: Game Created');
-    res.send(err || game);
+    if (err) {
+      res.send(500, err);
+    } else {
+      res.send(game);
+    }
   });
 };
 
 
 // Edit a game
 exports.edit = function(req, res) {
+  // s
 };
 
 
 // Delete a game
 exports.delete = function(req, res) {
-  Game.findOne({ '_id': req.body.game_id }, function(error, game) {
-    if (!game) {
-      res.send({ 'status': 404, 'msg': 'Game you are trying to delete is not found.' });
-    } else {
+  Game.remove({ '_id': req.body.game_id }, function(err) {
+    if (err) {
+
+    } else if (game) {
       game.remove(function (error) {
-        res.send(error || { 'msg': "Game successfully removed", 'game': game });
+        res.send({ message: "Game has been removed", 'game': game });
       });
+    } else {
+      res.send({ 'status': 404, 'msg': 'Game you are trying to delete is not found.' });
     }
   });
 };
