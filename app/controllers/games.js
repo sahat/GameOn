@@ -3,17 +3,20 @@ var mongoose = require('mongoose');
 var Game = require('../models/game');
 var User = require('../models/user');
 
-var ObjectId = mongoose.Types.ObjectId;
 
 // Get a specific game
-exports.get_a_game = function(req, res) {
-  Game.findById(req.params.game_id, function(err, game) {
+exports.get_game = function(req, res) {
+  Game
+  .findById(req.params.game_id)
+  .populate(comments.user)
+  .exec(function(err, game) {
     if (err) {
       res.send(500, err);
     } else if (game) {
+      game.comments = game.comments.slice(0,4);
       res.send(game)
     } else {
-      res.send(404, { message: 'Game not found' });
+      res.send(404, { message: 'The game is not found' });
     }
   });
 };

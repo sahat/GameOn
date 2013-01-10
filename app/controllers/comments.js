@@ -4,28 +4,28 @@ var User = mongoose.model('User');
 
 // Create a new comment
 exports.create_comment = function(req, res) {
-  var comment = new Comment({
+  var comment = {
     user: req.body.user_id,
-    body: req.body.text
-  });
-
-  comment.save(function(err) {
+    text: req.body.text
+  };
+  Game.update({ _id: req.params.game_id }, { $push: { comments: comment } }, function (err) {
     if (err) {
       res.send(500, err);
     } else {
-      res.send(game);
+      res.send({ message: 'New comment has been created' });
     }
   });
 };
 
 
+
 // Delete a comment from a particular game
 exports.delete_comment = function(req, res) {
-  Comment.remove({ '_id': req.params.comment_id }, function(err) {
+  Game.update({ '_id': req.params.game_id }, { $pull: { comments: req.body.comment_id } }, function(err) {
     if (err) {
       res.send(500, err);
     } else {
-      res.send({ message: "The game has been deleted" });
+      res.send({ message: "The comment has been deleted" });
     }
   });
 };
@@ -33,13 +33,13 @@ exports.delete_comment = function(req, res) {
 
 // Get comments for a particular game
 exports.get_comments = function(req, res) {
-  Comment.findById(req.params.comment_id, function(err, game) {
+  Game.findById(req.params.game_id, function(err, game) {
     if (err) {
       res.send(500, err);
     } else if (game) {
-      res.send(game)
+      res.send(game.comments)
     } else {
-      res.send(404, { message: 'Game not found' });
+      res.send(404, { message: 'The game is not found' });
     }
   });
 };
