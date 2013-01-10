@@ -5,29 +5,25 @@ var comments = require('../app/controllers/comments');
 
 module.exports = function(app, authenticate) {
 
-
   // Users Routes
   app.post('/register', authenticate.key, users.register);
   app.post('/login', authenticate.key, users.login);
   app.get('/users', authenticate.key, authenticate.user, users.get_all);
   app.get('/users/:id', authenticate.key, authenticate.user, users.get_user);
 
-
   // Games Routes
-  app.post('/games/create', authenticate.key, authenticate.user, games.create);
-  app.post('/games/join', authenticate.key, authenticate.user, games.join);
-  app.post('/games/leave', authenticate.key, authenticate.user, games.join);
-  app.get('/games/user/:user_id', authenticate.key, authenticate.user, games.user);
-  app.get('/games/nearby', authenticate.key, authenticate.user, games.nearby);
-  app.get('/games/:game_id', authenticate.key, games.get);
+  app.get('/games', authenticate.key, authenticate.user, games.get_all_games);
+  app.post('/games', authenticate.key, authenticate.user, games.create);
+  app.get('/games/:game_id', authenticate.key, games.get_game);
   app.put('/games/:game_id', authenticate.key, authenticate.user, games.edit);
   app.del('/games/:game_id', authenticate.key, authenticate.user, games.delete);
-  app.get('/games', authenticate.key, authenticate.user, games.get_all);
-
+  app.get('/games/user/:user_id', authenticate.key, authenticate.user, games.user);
+  app.get('/games/nearby', authenticate.key, authenticate.user, games.nearby);
+  app.post('/games/join', authenticate.key, authenticate.user, games.join);
+  app.post('/games/leave', authenticate.key, authenticate.user, games.join);
 
   // Comments Routes
-  app.post('/comments', authenticate.key, authenticate.user, comments.create);
-  app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete);
-  app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get);
-
+  app.post('/comments/:game_id', authenticate.key, authenticate.user, comments.create_comment);
+  app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete_comment);
+  app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get_comments);
 };
