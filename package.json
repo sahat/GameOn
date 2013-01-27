@@ -8,6 +8,7 @@
     "mocha": "1.x",
     "bcrypt": "0.7.x",
     "request": "*",
-    "swagger-node-express": "1.2.2"
+    "moment": "*",
+    "oauth2-provider": "1.x"
   }
 }
