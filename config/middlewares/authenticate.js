@@ -9,6 +9,10 @@ exports.key = function (req, res, next){
   var call_id = req.query.call_id;
   var signature = req.query.signature;
 
+  if (! (call_id && signature && api_key)) {
+    res.send(403, { error: 'You are not authorized to make requests to this server.' });
+  }
+
   var sig = crypto.createHash('md5').update(config.gameon.API_SECRET + call_id).digest("hex");
   sig = crypto.createHash('md5').update(sig + config.gameon.API_SECRET).digest("hex");
 
