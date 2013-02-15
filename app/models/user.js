@@ -16,21 +16,7 @@ var UserSchema = new mongoose.Schema({
 
 // Function for randomly generating keys
 function randomKey (limit) {
-  limit = (parseInt(limit, 10) > 0 ? parseInt(limit, 10) : 20);
-  var random = '';
-  var list = [
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D',
-    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    'Y', 'Z'
-  ];
-  while (random.length < limit) {
-    random += list[Math.floor(Math.random()*62)];
-  }
-  return random;
+  return Math.random().toString(36).substring(3)
 }
 
 
