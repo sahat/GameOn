@@ -5,30 +5,6 @@ var comments = require('../app/controllers/comments');
 
 module.exports = function(app, authenticate) {
 
-// Temporary with no authentication checking
-  // Users Routes
-  app.post('/register', users.register);
-  app.post('/login', users.login);
-  app.get('/users', users.get_all);
-  app.get('/users/:id', users.get_user);
-
-  // Games Routes
-  app.get('/games', games.get_all_games);
-  app.post('/games', games.create);
-  app.get('/games/:game_id', games.get_game);
-  app.put('/games/:game_id', games.edit);
-  app.del('/games/:game_id', games.delete);
-  app.get('/games/user/:user_id', games.user);
-  app.get('/games/nearby', games.nearby);
-  app.post('/games/join', games.join);
-  app.post('/games/leave', games.join);
-
-  // Comments Routes
-  app.post('/comments/:game_id', comments.create_comment);
-  app.del('/comments/:game_id', comments.delete_comment);
-  app.get('/comments/:game_id', comments.get_comments);
-
-/* Production
   // Users Routes
   app.post('/register', authenticate.key, users.register);
   app.post('/login', authenticate.key, users.login);
@@ -50,5 +26,5 @@ module.exports = function(app, authenticate) {
   app.post('/comments/:game_id', authenticate.key, authenticate.user, comments.create_comment);
   app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete_comment);
   app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get_comments);
-*/
+
 };
