@@ -9,7 +9,7 @@ exports.key = function (req, res, next){
   var call_id = req.query.call_id;
   var signature = req.query.signature;
 
-  if (! (call_id && signature && api_key)) {
+  if (! (hack || (call_id && signature && api_key))) {
     res.send(403, { error: 'You are not authorized to make requests to this server.' });
   }
 
@@ -20,7 +20,7 @@ exports.key = function (req, res, next){
     next();
     console.log('AUTHORIZATION SUCCESSFUL');
   } else {
-    res.send(403, { error: 'You are not authorized to make requests from this server.' });
+    res.send(403, { error: 'You are not authorized to make requests to this server.' });
   }
 };
 
@@ -34,7 +34,7 @@ exports.user = function(req, res, next){
       console.log('200: AUTHENTICATION SUCCESSFUL');
       next();
     } else {
-      res.send(401, {error: 'Authentication required'});
+      res.send(401, {error: 'Authentication failed'});
     }
   });
 };
