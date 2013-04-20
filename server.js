@@ -1,8 +1,8 @@
 // Require libraries
-var request = require('request');
-var express = require('express');
-var mongoose = require('mongoose');
-var config = require('./config/config');
+var request = require('request'),
+    express = require('express'),
+    mongoose = require('mongoose'),
+    config = require('./config/config');
 
 
 // Initialize Application
@@ -24,7 +24,7 @@ app.configure(function () {
 
 
 // Middleware
-var authenticate = require('./config/middlewares/authenticate');
+var authenticate = require('./config/middleware/authenticate');
 
 
 // Routes

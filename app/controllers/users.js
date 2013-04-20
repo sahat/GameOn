@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var User = require('../models/user');
 
+
 // Get a specific User
 exports.get_user = function(req, res) {
   User.findById(req.params.id, function(err, user) {
@@ -54,7 +55,7 @@ exports.register = function(req, res) {
 };
 
 
-// Login a user and retrieve his data
+// Login a user and retrieve their data
 exports.login = function (req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {

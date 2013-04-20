@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
+
 // Supported sports
 var sports = [
   'soccer',
@@ -13,6 +14,7 @@ var sports = [
   'tennis',
   'paintball'
 ];
+
 
 // Game schema definition
 var GameSchema = new Schema({

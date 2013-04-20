@@ -1,7 +1,7 @@
 // Load Controllers
-var users = require('../app/controllers/users');
-var games = require('../app/controllers/games');
-var comments = require('../app/controllers/comments');
+var users = require('../app/controllers/users'),
+    games = require('../app/controllers/games'),
+    comments = require('../app/controllers/comments');
 
 module.exports = function(app, authenticate) {
 
@@ -26,5 +26,4 @@ module.exports = function(app, authenticate) {
   app.post('/comments/:game_id', authenticate.key, authenticate.user, comments.create_comment);
   app.del('/comments/:game_id', authenticate.key, authenticate.user, comments.delete_comment);
   app.get('/comments/:game_id', authenticate.key, authenticate.user, comments.get_comments);
-
 };

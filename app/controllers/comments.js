@@ -18,7 +18,6 @@ exports.create_comment = function(req, res) {
 };
 
 
-
 // Delete a comment from a particular game
 exports.delete_comment = function(req, res) {
   Game.update({ '_id': req.params.game_id }, { $pull: { comments: req.body.comment_id } }, function(err) {

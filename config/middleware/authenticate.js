@@ -1,7 +1,8 @@
-var crypto = require('crypto');
-var config = require('../config');
-var User = require('../../app/models/user');
-var mongoose = require('mongoose');
+var crypto = require('crypto'),
+    config = require('../config'),
+    User = require('../../app/models/user'),
+    mongoose = require('mongoose');
+
 
 exports.key = function (req, res, next){
   var hack = req.query.hack;
@@ -24,6 +25,7 @@ exports.key = function (req, res, next){
   }
 };
 
+
 exports.user = function(req, res, next){
   var uid = req.body.uid || req.query.uid;
   var token = req.body.token || req.query.token;
@@ -34,7 +36,7 @@ exports.user = function(req, res, next){
       console.log('200: AUTHENTICATION SUCCESSFUL');
       next();
     } else {
-      res.send(401, {error: 'Authentication failed'});
+      res.send(401, { error: 'Authentication failed' });
     }
   });
 };
