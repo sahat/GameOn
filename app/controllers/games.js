@@ -85,19 +85,26 @@ exports.join = function(req, res) {
 
 // Have a user leave a game
 exports.leave = function(req, res) {
-  Game.findByIdAndUpdate(req.query.game_id, { $pull: { players: req.query.user_id } }, function(err, game) {
+  // TODO: Move to js utilities file
+  function arrayObjectIndexOf(myArray, searchTerm, property) {
+    for(var i = 0, len = myArray.length; i < len; i++) {
+      if (myArray[i][property] === searchTerm) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  Game.findById(req.query.game_id, function(err, game) {
     if (err) {
-      res.send({ code: 500, message: err });
+      res.json(500, { message: err });
     } else if (game) {
-      game
-        .populate('players')
-        .populate('comments')
-        .populate('comments.user')
-        .exec(function(err, updated_game) {
-          res.send(updated_game);
-        });
+      var indexToRemove = arrayObjectIndexOf(game.players, req.query.user_id, 'user');
+      var updatedGame = game.toObject();
+      updatedGame.players.splice(indexToRemove, 1);
+      res.json(updatedGame);
     } else {
-      res.json(404, 'The game you are trying to join no longer exists');
+      res.json(404, { message: 'The game you are trying to join no longer exists' });
     }
   });
 };
@@ -116,7 +123,7 @@ exports.create = function(req, res) {
   game.players.push({
     user: mongoose.types.ObjectId(res.user._id),
     user_name: res.user.name,
-    user_avatar: 'res.user.avatar',
+    user_avatar: res.user.avatar,
     joined_on: Date.now()
   });
 
@@ -134,7 +141,7 @@ exports.create = function(req, res) {
 exports.edit = function(req, res) {
   Game.findById(req.query.game_id, function(err, game) {
     if (err) {
-      res.send(500, err);
+      res.json(500, { message: err });
     } else if (game) {
       game.game_date = req.body.game_date || game.game_date;
       game.geo = req.body.geo || game.geo;
@@ -142,9 +149,9 @@ exports.edit = function(req, res) {
       game.max_players = req.body.max_players || game.max_players;
       game.save(function(err) {
         if (err) {
-          res.send(500, err);
+          res.json(500, { message: err });
         } else {
-          res.send({ message: 'The game has been updated' });
+          res.json({ message: 'The game has been updated' });
         }
       });
     } else {
