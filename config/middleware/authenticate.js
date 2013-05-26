@@ -11,7 +11,7 @@ exports.key = function (req, res, next){
   var signature = req.query.signature;
 
   if (! (hack || (call_id && signature && api_key))) {
-    res.json({ code: 403, message: 'You are not authorized to make requests to this server.' });
+    res.json(403, { error: 'You are not authorized to make requests to this server.' });
   }
 
   var sig = crypto.createHash('md5').update(config.gameon.API_SECRET + call_id).digest("hex");
@@ -21,7 +21,7 @@ exports.key = function (req, res, next){
     next();
     console.log('AUTHORIZATION SUCCESSFUL');
   } else {
-    res.json({ code: 403, error: 'You are not authorized to make requests to this server.' });
+    res.json(403, { error: 'You are not authorized to make requests to this server.' });
   }
 };
 
@@ -29,14 +29,14 @@ exports.key = function (req, res, next){
 exports.user = function(req, res, next){
   var uid = req.body.uid || req.query.uid;
   var token = req.body.token || req.query.token;
-  User.findById(mongoose.Types.ObjectId(uid), function(err, user) {
-    if (!err && user) {
-      // TODO: Make sure token validates
+  console.log(uid);
+  User.findById(mongoose.Types.ObjectId(uid), function (err, user) {
+    if (!err && user && user.token === token) {
       console.log('200: AUTHENTICATION SUCCESSFUL');
       res.user = user;
       next();
     } else {
-      res.json({ code: 401, message: 'Authentication failed' });
+      res.json(401, { error: 'Authentication failed' });
     }
   });
 };
