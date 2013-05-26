@@ -20,14 +20,23 @@ var sports = [
 var GameSchema = new Schema({
   sport: { type: String, required: true, enum: sports },
   geo: { type: [Number], index: '2d' },
-  players:[ {user: { type: ObjectId, ref: 'User' }, joined_on: Date } ],
   max_players: { type: Number, required: true, min: 2, max: 40 },
   game_date: { type: Number, required: true },
   description: { type: String, max: 140, trim: true, default: '' },
   created_by: { type: ObjectId, ref: 'User' },
   created_on: { type: Date, default: Date.now },
+  players: [
+    {
+      user: { type: ObjectId, ref: 'User' },
+      user_name: { type: String, required: true, trim: true },
+      user_avatar: { type: String, default: '', trim: true },
+      joined_on: Date
+    }
+  ],
   comments: [{
     user: { type: ObjectId, ref: 'User' },
+    user_name: { type: String, required: true, trim: true },
+    user_avatar: { type: String, default: '', trim: true },
     text: { type: String, required: true, max: 255 },
     date: { type: Date, default: Date.now }
   }]

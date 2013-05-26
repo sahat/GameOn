@@ -14,12 +14,6 @@ var UserSchema = new mongoose.Schema({
 });
 
 
-// Function for randomly generating keys
-function randomKey (limit) {
-  return Math.random().toString(36).substring(3)
-}
-
-
 // Pre save function
 UserSchema.pre('save', function (next) {
   var user = this;
@@ -43,7 +37,7 @@ UserSchema.pre('save', function (next) {
 
       // Override text password with the hashed password & set token
       user.password = hash;
-      user.token = randomKey();
+      user.token = Math.random().toString(36).substring(3);
       next();
     });
   });
