@@ -8,7 +8,6 @@ var mongoose = require('mongoose'),
 exports.get_game = function(req, res) {
   Game
   .findById(req.params.game_id)
-  .populate(comments.user)
   .exec(function(err, game) {
     if (err) {
       res.send(500, err);
@@ -75,10 +74,10 @@ exports.join = function(req, res) {
       .populate('comments')
       .populate('comments.user')
       .exec(function(err, updated_game) {
-        res.send(updated_game);
+        res.json(updated_game);
       });
     } else {
-      res.send(404, { message: 'The game you are trying to join no longer exists' });
+      res.json({ code: 404, message: 'The game you are trying to join no longer exists' });
     }
   });
 };
@@ -88,7 +87,7 @@ exports.join = function(req, res) {
 exports.leave = function(req, res) {
   Game.findByIdAndUpdate(req.query.game_id, { $pull: { players: req.query.user_id } }, function(err, game) {
     if (err) {
-      res.send(500, err);
+      res.send({ code: 500, message: err });
     } else if (game) {
       game
         .populate('players')
@@ -98,7 +97,7 @@ exports.leave = function(req, res) {
           res.send(updated_game);
         });
     } else {
-      res.send(404, { message: 'The game you are trying to join no longer exists' });
+      res.json({ code: 404, message: 'The game you are trying to join no longer exists' });
     }
   });
 };
@@ -106,16 +105,32 @@ exports.leave = function(req, res) {
 
 // Create a new game
 exports.create = function(req, res) {
+  var uid = req.body.uid || req.query.uid;
+
   var game = new Game({
     created_by: req.body.created_by,
     sport: req.body.sport,
     geo: req.body.geo,
     description: req.body.description,
     players: [{
-      user: mongoose.types.bjectId(req.body.user_id),
+      user: mongoose.types.ObjectId(req.body.user_id),
+      user_name: '',
+      user_avatar: '',
       joined_on: Date.now()
     }]
   });
+
+  User.findById(mongoose.Types.ObjectId(uid), function(err, user) {
+    if (err) {
+      res.json({ code: 500, message: err });
+    } else {
+      game.players.push({
+
+      });
+    }
+  });
+
+
 
   game.players.push({
     joined_on: new Date()

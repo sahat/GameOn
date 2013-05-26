@@ -44,12 +44,12 @@ exports.register = function(req, res) {
 
   user.save(function(err) {
     if (err) {
-      res.send(500, err);
+      res.json({ code: 500, message: err });
     } else {
       console.log("Saved user to the database successfully");
       user = user.toObject();
       delete user.password;
-      res.send(user);
+      res.json(user);
     }
   });
 };
@@ -59,19 +59,19 @@ exports.register = function(req, res) {
 exports.login = function (req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
-      res.send(500, err);
+      res.json({ code: '500', message: err });
     } else if (user) {
       user.comparePassword(req.body.password, function(err, isMatch) {
         if (isMatch) {
           user = user.toObject();
           delete user.password;
-          res.send(user);
+          res.json(user);
         } else {
-          res.send(401, { message: 'Incorrect password' });
+          res.json({ code: '401', message: 'Incorrect password' });
         }
       });
     } else {
-      res.send(404, { message: 'User not found' });
+      res.json({ code: 404, message: 'User not found' });
     }
   });
 };
