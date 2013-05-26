@@ -71,7 +71,7 @@ exports.login = function (req, res) {
         }
       });
     } else {
-      res.json({ code: 404, message: 'User not found' });
+      res.send(401, { message: 'User not found' });
     }
   });
 };
