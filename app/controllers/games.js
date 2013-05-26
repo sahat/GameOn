@@ -65,19 +65,20 @@ exports.user = function(req, res) {
 
 // Have a user join a game
 exports.join = function(req, res) {
-  Game.findByIdAndUpdate(req.query.game_id, { $push: { players: req.query.user_id } }, function(err, game) {
+  Game.findById(req.query.game_id, function(err, game) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else if (game) {
-      game
-      .populate('players')
-      .populate('comments')
-      .populate('comments.user')
-      .exec(function(err, updated_game) {
-        res.json(updated_game);
+      var updatedGame = game.toObject();
+      updatedGame.players.push({
+        user: req.query.user_id,
+        user_name: res.user.name,
+        user_avatar: res.user.avatar,
+        joined_on: Date.now()
       });
+      res.json(updatedGame);
     } else {
-      res.json({ code: 404, message: 'The game you are trying to join no longer exists' });
+      res.json(404, { message: 'The game you are trying to join no longer exists' });
     }
   });
 };
