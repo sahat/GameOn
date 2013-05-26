@@ -97,7 +97,7 @@ exports.leave = function(req, res) {
           res.send(updated_game);
         });
     } else {
-      res.json({ code: 404, message: 'The game you are trying to join no longer exists' });
+      res.json(404, 'The game you are trying to join no longer exists');
     }
   });
 };
@@ -105,42 +105,26 @@ exports.leave = function(req, res) {
 
 // Create a new game
 exports.create = function(req, res) {
-  var uid = req.body.uid || req.query.uid;
-
   var game = new Game({
     created_by: req.body.created_by,
     sport: req.body.sport,
     geo: req.body.geo,
     description: req.body.description,
-    players: [{
-      user: mongoose.types.ObjectId(req.body.user_id),
-      user_name: '',
-      user_avatar: '',
-      joined_on: Date.now()
-    }]
+    players: []
   });
-
-  User.findById(mongoose.Types.ObjectId(uid), function(err, user) {
-    if (err) {
-      res.json({ code: 500, message: err });
-    } else {
-      game.players.push({
-
-      });
-    }
-  });
-
-
 
   game.players.push({
-    joined_on: new Date()
+    user: mongoose.types.ObjectId(res.user._id),
+    user_name: res.user.name,
+    user_avatar: 'res.user.avatar',
+    joined_on: Date.now()
   });
 
   game.save(function (err) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send(game);
+      res.json(game);
     }
   });
 };
@@ -148,7 +132,6 @@ exports.create = function(req, res) {
 
 // Edit a game
 exports.edit = function(req, res) {
-
   Game.findById(req.query.game_id, function(err, game) {
     if (err) {
       res.send(500, err);
