@@ -1,8 +1,10 @@
+var assert=require('assert');
+var expect = require('expect.js');
 var request = require('request');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
-var User = require('../app/models/user');
 
+var User = require('../app/models/user');
 
 describe('user registration process', function() {
   // authorization
@@ -17,7 +19,7 @@ describe('user registration process', function() {
   // dummy user object
   user = {
     name: 'Sahat Yalkabov',
-    email: 'sakhat@gmail.com'+Math.floor(Math.random()*1000),
+    email: 'sakhat@gmail.com'+Math.floor(Math.random()*1000),
     password: 'ASDF1!@#$',
     avatar: 'http://avatar.com/avatar.png',
     bio: 'Lives in New Jersey. Web Dev.',
@@ -27,6 +29,30 @@ describe('user registration process', function() {
   it('should return json user object on registration success', function(done){
     request.post('http://localhost:3000/register' + querystr, { form: user }, function(error, response, body) {
       expect(body).toEqual(jasmine.any(Object));
+      done();
+    });
+  });
+
+});
+
+
+describe('login process', function() {
+
+  var credentials = {
+    email: 'bilalquadri92@gmail.com',
+    password: 'password'
+  };
+
+  it('should return a 403 if no API key is passed', function(done) {
+    request.post('http://localhost:3000/login', credentials, function(err, res, body) {
+      assert.equal(res.statusCode, 403);
+      done();
+    });
+  });
+
+  it('should return a 401 if authentication fails', function(done) {
+    request.post('http://localhost:3000/login?hack=true', {email:'meh', password:'meh'}, function(err, res, body) {
+      assert.equal(res.statusCode, 401);
       done();
     });
   });

@@ -1,6 +1,9 @@
 var request = require('request');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
+var assert = require('assert');
+var expect = require('expect.js');
+
 var Game = require('../app/models/game');
 
 describe('Games controller', function() {
