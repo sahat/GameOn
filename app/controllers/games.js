@@ -10,14 +10,12 @@ exports.get_game = function(req, res) {
   .findById(req.params.game_id)
   .exec(function(err, game) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else if (game) {
       game.comments = game.comments.slice(0,4);
-      res.send(game)
+      res.json(game)
     } else {
-      res.send(404, {
-        message: 'The game is not found'
-      });
+      res.json(404, { message: 'The game is not found' });
     }
   });
 };
@@ -27,9 +25,9 @@ exports.get_game = function(req, res) {
 exports.get_all_games = function(req, res) {
   Game.find(function(err, games) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send(games);
+      res.json(games);
     }
   });
 };
@@ -52,12 +50,11 @@ exports.nearby = function(req, res) {
 exports.user = function(req, res) {
   Game
   .where(req.params.user_id).in('players')
-  .populate('players')
   .exec(function(err, games) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send(games);
+      res.json(games);
     }
   });
 };
@@ -166,9 +163,9 @@ exports.edit = function(req, res) {
 exports.delete = function(req, res) {
   Game.remove({ '_id': req.body.game_id }, function(err) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send({ message: "The game has been deleted" });
+      res.json({ message: "The game has been deleted" });
     }
   });
 };
