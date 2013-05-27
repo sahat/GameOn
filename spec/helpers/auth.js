@@ -1,11 +1,26 @@
-var crypto = require('crypto')
-  , config = require('../../config/config').gameon
-  , request = require('request')
-  , mongoose = require('mongoose');
+/**
+ * Helper for making authorized requested to the GameOn API.
+ *
+ * @param options JSON object with options:
+ *    url: Fully qualified URL to hit
+ *    method: HTTP verb (GET, POST, PUT, DELETE, PATCH)
+ *    qs: JSON object of query string properties
+ *    json: JSON object of body to send in post
+ *    invalid_signature: Setting to true will not send key, secret, and signature
+ *    callback: Function to call after response is recieved
+ *
+ * @param callback Success callback can be specified here and takes priority.
+ */
+
+var crypto = require('crypto'),
+    config = require('../../config/config').gameon,
+    request = require('request'),
+    mongoose = require('mongoose');
 
 module.exports = function(options, callback) {
-
-  var call_id, sig, query_string;
+  var call_id,
+      sig,
+      query_string;
 
   call_id = Date.now().toString();
 
@@ -24,12 +39,14 @@ module.exports = function(options, callback) {
   }
 
   var params = {
-    uri: options.url
-  , method: options.method
-  , qs: query_string
-  , json: options.json || options.body
-  ,
+    uri: options.url,
+    method: options.method,
+    qs: query_string
   };
+
+  if (method !== 'GET') {
+    params.json = options.json || options.body;
+  }
 
   request(params, (callback || options.callback));
 };
