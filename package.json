@@ -10,6 +10,7 @@
     "bcrypt": "0.7.x",
     "request": "*",
     "moment": "*",
+    "email-validator": "*",
     "oauth2-provider": "1.x"
   },
   "devDependencies": {
