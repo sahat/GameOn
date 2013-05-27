@@ -5,19 +5,20 @@ var crypto = require('crypto'),
 
 
 exports.key = function (req, res, next){
-  var hack = req.query.hack;
   var api_key = req.query.api_key;
+  var api_secret = config.gameon.API_SECRET;
   var call_id = req.query.call_id;
   var signature = req.query.signature;
 
-  if (! (hack || (call_id && signature && api_key))) {
+  if (! (call_id && signature && api_key)) {
     res.json(403, { error: 'You are not authorized to make requests to this server.' });
   }
 
-  var sig = crypto.createHash('md5').update(config.gameon.API_SECRET + call_id).digest("hex");
-  sig = crypto.createHash('md5').update(sig + config.gameon.API_SECRET).digest("hex");
+  var valid_signature = crypto.createHmac('md5', api_secret)
+    .update(config.gameon.API_KEY + call_id + api_secret)
+    .digest("hex");
 
-  if (hack || ( api_key === config.gameon.API_KEY && sig === signature) ) {
+  if (api_key === config.gameon.API_KEY && signature === valid_signature) {
     next();
   } else {
     res.json(403, { error: 'You are not authorized to make requests to this server.' });

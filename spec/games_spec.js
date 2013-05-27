@@ -1,25 +1,14 @@
 var request = require('request');
-var crypto = require('crypto');
-var mongoose = require('mongoose');
 var assert = require('assert');
-var expect = require('expect.js');
-
+var mongoose = require('mongoose');
+var User = require('../app/models/user');
 var Game = require('../app/models/game');
 
+//mongoose.connect(require('../config/config').db);
+
 //describe('Games controller', function() {
-  //// authorization
-  //api_secret = 'secret';
-  //call_id = '007'
-  //api_key = 'gameon';
-  //signature = crypto.createHash('md5').update(api_secret + call_id).digest("hex");
 
-  //// authentication
-  //uid = '50e8aafee27c60eb37000003'
-  //token = 'snoumh67eg8tb87g';
-
-  //// combined querystring
-  //querystr = '?api_key='+api_key+'&call_id='+call_id+'&signature='+signature+'&uid='+uid+'&token='+token;
-
+  //this.url = 'http://localhost:3000/games';
 
   //it('should create a new game', function(done){
 
