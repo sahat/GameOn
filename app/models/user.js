@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
+var emailValidator = require('email-validator').validate;
 
 // User schema definition
 var UserSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  email: { type: String, lowercase: true, trim: true, required: true, index: { unique: true } },
+  email: { type: String, lowercase: true, trim: true, required: true, validate: emailValidator, index: { unique: true } },
   password: { type: String, required: true },
-  token: {type: String, required: true},
+  token: {type: String, default: Math.random().toString(36).substring(3)},
   created_on: { type: Date, default: Date.now },
   avatar: { type: String, default: '', trim: true },
   bio: { type: String, default: '', trim: true }
