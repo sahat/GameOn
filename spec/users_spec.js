@@ -3,44 +3,64 @@ var expect = require('expect.js');
 var request = require('request');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
-
 var User = require('../app/models/user');
-var base_url;
+var base_url = 'http://localhost:3000';
 
 mongoose.connect(require('../config/config').db);
 
-//describe('user registration process', function() {
-  //// authorization
-  //api_secret = 'secret';
-  //call_id = '007';
-  //api_key = 'gameon';
-  //signature = crypto.createHash('md5').update(api_secret + call_id).digest("hex");
+describe('user registration process', function() {
 
-  //// combined querystring
-  //querystr = '?api_key='+api_key+'&call_id='+call_id+'&signature='+signature;
+  var url = base_url + '/register';
+  var user;
+  beforeEach(function(done) {
+    user = {
+      name: 'Sahat Yalkabov',
+      email: 'test' + parseInt(Math.random() * 1000) + '@gmail.com',
+      password: 'badpassword',
+      avatar: 'http://placekitten.com/64/64',
+      bio: 'Lives in New Jersey. Web Dev.',
+    };
+    User.remove({email: user.email}, done);
+  });
+  after(function(done) {
+    User.remove({email: user.email}, done);
+  });
 
-  //// dummy user object
-  //user = {
-    //name: 'Sahat Yalkabov',
-    //email: 'sakhat@gmail.com'+Math.floor(Math.random()*1000),
-    //password: 'ASDF1!@#$',
-    //avatar: 'http://avatar.com/avatar.png',
-    //bio: 'Lives in New Jersey. Web Dev.',
-    //token: 'snoumh67eg8tb87g' // should be randomly generated in controller
-  //};
+  it('should return json user object on registration success', function(done){
+    request.post(url + '?hack=true', { json: user }, function(err, res, body) {
+      assert.equal(res.statusCode, 200);
+      assert.ok(body.token);
+      done();
+    });
+  });
 
-  //it('should return json user object on registration success', function(done){
-    //request.post('http://localhost:3000/register' + querystr, { form: user }, function(error, response, body) {
-      //expect(body).toEqual(jasmine.any(Object));
-      //done();
-    //});
-  //});
+  it('should fail if the email is invalid', function(done) {
+    user.email = 'invalid email';
+    request.post(url + '?hack=true', { json: user }, function(err, res, body) {
+      assert.equal(res.statusCode, 400);
+      done();
+    });
+  });
 
-//});
+  it('should fail if a user with this email already exists', function(done) {
+    var existing = new User(user);
+    existing.save(function(err) {
+      if (err) { 
+        assert.fail(err, undefined, 'Failed to write to database', '');
+      }
+      request.post(url + '?hack=true', { json: user }, function(err, res, body) {
+        assert.equal(res.statusCode, 400);
+        done();
+      });
+    });
+  });
+
+});
 
 
 describe('login process', function() {
-  base_url = 'http://localhost:3000/login';
+
+  var url = base_url + '/login';
 
   describe('with bad credentials', function() {
 
@@ -53,14 +73,14 @@ describe('login process', function() {
     });
 
     it('should return a 403 if no API key is passed', function(done) {
-      request.post(base_url, credentials, function(err, res, body) {
+      request.post(url, credentials, function(err, res, body) {
         assert.equal(res.statusCode, 403);
         done();
       });
     });
 
     it('should return a 401 if authentication fails', function(done) {
-      request.post(base_url + '?hack=true', credentials, function(err, res, body) {
+      request.post(url + '?hack=true', credentials, function(err, res, body) {
         assert.equal(res.statusCode, 401);
         done();
       });
@@ -71,19 +91,17 @@ describe('login process', function() {
 
   describe('with good credentials', function() {
 
-    // Set up
-    var url;
+    // Setting up hooks
+    var credentials, fake_user;
     before(function(done) {
-      url = 'http://localhost:3000/login?hack=true';
       credentials = {
-        email: 'user' + (Math.random() * 1000) + '@integlabs.com',
+        email: 'user' + parseInt(Math.random() * 1000, 10) + '@integlabs.com',
         password: 'password'
       }
       fake_user = new User({
         name: 'Test User',
         email: credentials.email,
         password: credentials.password,
-        token: Math.random().toString(36).substring(3),
         bio: 'test bio'
       });
       fake_user.save(done);
@@ -92,20 +110,29 @@ describe('login process', function() {
       fake_user.remove(done);
     });
 
-    it('should return a 200 on success', function(done) {
-      request.post(url, credentials, function(err, res, body) {
+    it('should return a 403 to an unauthorized client', function(done) {
+      request.post(url, {json: credentials}, function(err, res, body) {
+        assert.equal(res.statusCode, 403);
+        assert.equal(undefined, body.token)
+        done();
+      });
+    });
+
+    it('should return a 200', function(done) {
+      request.post(url + '?hack=true', {json: credentials}, function(err, res, body) {
         assert.equal(res.statusCode, 200);
         done();
       });
     });
 
-    //it('should return the correct user', function(done) {
-      //request.post(url, credentials, function(err, res, body) {
-        //console.log(body);
-        //assert.equal('TODO', 'TODO');
-        //done();
-      //});
-    //});
+    it('should return the correct user', function(done) {
+      request.post(url + '?hack=true', {json: credentials}, function(err, res, body) {
+        assert.equal(body._id, fake_user.id);
+        assert.equal(body.email, fake_user.email);
+        assert.ok(body.token);
+        done();
+      });
+    });
 
   });
 
