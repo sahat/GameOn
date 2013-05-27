@@ -10,9 +10,9 @@ exports.create_comment = function(req, res) {
   };
   Game.update({ _id: req.params.game_id }, { $push: { comments: comment } }, function (err) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send({ message: 'New comment has been created' });
+      res.json({ message: 'New comment has been created' });
     }
   });
 };
@@ -22,9 +22,9 @@ exports.create_comment = function(req, res) {
 exports.delete_comment = function(req, res) {
   Game.update({ '_id': req.params.game_id }, { $pull: { comments: req.body.comment_id } }, function(err) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else {
-      res.send({ message: "The comment has been deleted" });
+      res.json({ message: "The comment has been deleted" });
     }
   });
 };
@@ -34,11 +34,11 @@ exports.delete_comment = function(req, res) {
 exports.get_comments = function(req, res) {
   Game.findById(req.params.game_id, function(err, game) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else if (game) {
-      res.send(game.comments)
+      res.json(game.comments)
     } else {
-      res.send(404, { message: 'The game is not found' });
+      res.json(404, { error: 'The game was not found' });
     }
   });
 };
