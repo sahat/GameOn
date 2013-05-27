@@ -14,7 +14,7 @@
   "devDependencies": {
     "Faker": "0.5.x",
     "mocha": "1.x",
-    "expect.js" : "*"
+    "should" : "*"
   },
   "scripts": {
     "test": "mocha spec"
