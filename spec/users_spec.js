@@ -1,6 +1,6 @@
-var assert=require('assert');
-var expect = require('expect.js');
 var mongoose = require('mongoose');
+var assert=require('assert');
+
 var User = require('../app/models/user');
 var request = require('./helpers/auth');
 
@@ -138,15 +138,6 @@ describe('login process', function() {
     it('should return a 200', function(done) {
       request(options, function(err, res, body) {
         assert.equal(res.statusCode, 200);
-        done();
-      });
-    });
-
-    it('should return the correct user', function(done) {
-      request(options, function(err, res, body) {
-        assert.equal(body._id, fake_user.id);
-        assert.equal(body.email, fake_user.email);
-        assert.ok(body.token);
         done();
       });
     });

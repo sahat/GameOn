@@ -40,11 +40,11 @@ module.exports = function(options, callback) {
 
   var params = {
     uri: options.url,
-    method: options.method,
+    method: options.method || 'GET',
     qs: query_string
   };
 
-  if (method !== 'GET') {
+  if (params.method !== 'GET') {
     params.json = options.json || options.body;
   }
 
