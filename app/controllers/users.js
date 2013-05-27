@@ -6,11 +6,11 @@ var User = require('../models/user');
 exports.get_user = function(req, res) {
   User.findById(req.params.id, function(err, user) {
     if (err) {
-      res.send(500, err);
+      res.json(500, err);
     } else if (user) {
-      res.send(user);
+      res.json(user);
     } else {
-      res.send(404, user);
+      res.json(404, user);
     }
   });
 };
@@ -23,9 +23,9 @@ exports.get_all = function(req, res) {
   .exclude('password')
   .exec(function(err, users) {
     if (err) {
-      res.send(500, err)
+      res.json(500, err)
     } else {
-      res.send(users);
+      res.json(users);
     }
   });
 };
@@ -44,9 +44,8 @@ exports.register = function(req, res) {
 
   user.save(function(err) {
     if (err) {
-      res.json({ code: 500, message: err });
+      res.json(400, err);
     } else {
-      console.log("Saved user to the database successfully");
       user = user.toObject();
       delete user.password;
       res.json(user);
@@ -59,7 +58,7 @@ exports.register = function(req, res) {
 exports.login = function (req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) {
-      res.json({ code: '500', message: err });
+      res.json(500, err);
     } else if (user) {
       user.comparePassword(req.body.password, function(err, isMatch) {
         if (isMatch) {
@@ -67,11 +66,11 @@ exports.login = function (req, res) {
           delete user.password;
           res.json(user);
         } else {
-          res.json({ code: '401', message: 'Incorrect password' });
+          res.json(401, { error: 'Incorrect password' });
         }
       });
     } else {
-      res.send(401, { message: 'User not found' });
+      res.json(401, { error: 'User not found' });
     }
   });
 };

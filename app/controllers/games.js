@@ -15,7 +15,7 @@ exports.get_game = function(req, res) {
       game.comments = game.comments.slice(0,4);
       res.json(game)
     } else {
-      res.json(404, { message: 'The game is not found' });
+      res.json(404, { error: 'The game was not found' });
     }
   });
 };
@@ -38,9 +38,9 @@ exports.nearby = function(req, res) {
   var area = [req.query.longitude, req.query.latitude];
   Game.find({ geo: { $nearSphere: area } }, function(err, games) {
       if (err) {
-        res.send(500, err);
+        res.json(500, err);
       } else
-        res.send(games);
+        res.json(games);
     }
   );
 };
@@ -75,7 +75,7 @@ exports.join = function(req, res) {
       });
       res.json(updatedGame);
     } else {
-      res.json(404, { message: 'The game you are trying to join no longer exists' });
+      res.json(404, { error: 'The game you are trying to join no longer exists' });
     }
   });
 };
@@ -102,7 +102,7 @@ exports.leave = function(req, res) {
       updatedGame.players.splice(indexToRemove, 1);
       res.json(updatedGame);
     } else {
-      res.json(404, { message: 'The game you are trying to join no longer exists' });
+      res.json(404, { error: 'The game you are trying to join no longer exists' });
     }
   });
 };
@@ -147,13 +147,13 @@ exports.edit = function(req, res) {
       game.max_players = req.body.max_players || game.max_players;
       game.save(function(err) {
         if (err) {
-          res.json(500, { message: err });
+          res.json(500, err);
         } else {
-          res.json({ message: 'The game has been updated' });
+          res.json({ error: 'The game has been updated' });
         }
       });
     } else {
-      res.send(404, { message: 'The game you are trying to update no longer exists' });
+      res.json(404, { error: 'The game you are trying to update no longer exists' });
     }
   });
 };

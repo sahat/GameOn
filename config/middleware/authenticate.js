@@ -19,7 +19,6 @@ exports.key = function (req, res, next){
 
   if (hack || ( api_key === config.gameon.API_KEY && sig === signature) ) {
     next();
-    console.log('AUTHORIZATION SUCCESSFUL');
   } else {
     res.json(403, { error: 'You are not authorized to make requests to this server.' });
   }
