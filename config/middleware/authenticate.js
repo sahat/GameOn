@@ -32,7 +32,6 @@ exports.user = function(req, res, next){
   console.log(uid);
   User.findById(mongoose.Types.ObjectId(uid), function (err, user) {
     if (!err && user && user.token === token) {
-      console.log('200: AUTHENTICATION SUCCESSFUL');
       next();
     } else {
       res.json(401, { error: 'Authentication failed' });
