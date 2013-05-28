@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var request = require('./helpers/auth');
 var should = require('should');
 var User = require('../app/models/user');
+var Faker = require('Faker');
 
 
 describe('Users Controller', function() {
@@ -32,7 +33,6 @@ describe('Users Controller', function() {
       };
       options = {
         url: url,
-        method: 'POST',
         json: user
       }
       User.remove({email: user.email}, done);
@@ -42,7 +42,7 @@ describe('Users Controller', function() {
     });
 
     it('should return json user object on registration success', function(done){
-      request(options, function(err, res, body) {
+      request.post(options, function(err, res, body) {
         res.should.have.status(200);
         body.token.should.be.ok;
         body.email.should.be.ok;
@@ -52,7 +52,7 @@ describe('Users Controller', function() {
 
     it('should fail if the email is invalid', function(done) {
       options.json.email = 'invalid email';
-      request(options, function(err, res, body) {
+      request.post(options, function(err, res, body) {
         res.should.have.status(400);
         should.not.exist(body.token);
         done();
@@ -63,7 +63,7 @@ describe('Users Controller', function() {
       var existing = new User(user);
       existing.save(function(err) {
         should.not.exist(err);
-        request(options, function(err, res, body) {
+        request.post(options, function(err, res, body) {
           res.should.have.status(400);
           done();
         });
@@ -87,21 +87,20 @@ describe('Users Controller', function() {
         };
         options = {
           url: url,
-          method: 'POST',
           json: credentials
         };
       });
 
       it('should return a 403 if no API key is passed', function(done) {
         options.invalid_signature = true;
-        request(options, function(err, res, body) {
+        request.post(options, function(err, res, body) {
           res.should.have.status(403);
           done();
         });
       });
 
       it('should return a 401 if authentication fails', function(done) {
-        request(options, function(err, res, body) {
+        request.post(options, function(err, res, body) {
           res.should.have.status(401);
           done();
         });
@@ -129,7 +128,6 @@ describe('Users Controller', function() {
       beforeEach(function() {
         options = {
           url: url,
-          method: 'POST',
           json: credentials
         };
       });
@@ -139,7 +137,7 @@ describe('Users Controller', function() {
 
       it('should return a 403 to an unauthorized client', function(done) {
         options.invalid_signature = true;
-        request(options, function(err, res, body) {
+        request.post(options, function(err, res, body) {
           res.should.have.status(403);
           should.not.exist(body.token);
           should.exist(body.error);
@@ -148,7 +146,7 @@ describe('Users Controller', function() {
       });
 
       it('should return the correct user', function(done) {
-        request(options, function(err, res, body) {
+        request.post(options, function(err, res, body) {
           res.should.have.status(200);
           fake_user.id.should.equal(body._id);
           fake_user.email.should.equal(body.email);

@@ -26,15 +26,14 @@ describe('Games Controller', function() {
 
     it('should get status code 403 if there is no signature', function(done) {
       options.invalid_signature = true;
-      request(options, function(err, res, body) {
+      request.get(options, function(err, res, body) {
         res.should.have.status(403);
         done();
       });
     });
 
     it('should send status code 401 when user is not signed in', function(done) {
-      options.method = 'POST';
-      request(options, function(err, res, body) {
+      request.post(options, function(err, res, body) {
         res.should.have.status(401);
         done();
       });

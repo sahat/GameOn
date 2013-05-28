@@ -17,7 +17,7 @@ var crypto = require('crypto'),
     request = require('request'),
     mongoose = require('mongoose');
 
-module.exports = function(options, callback) {
+var make_request = function(options, callback) {
   var call_id,
       sig,
       query_string;
@@ -50,3 +50,25 @@ module.exports = function(options, callback) {
 
   request(params, (callback || options.callback));
 };
+
+exports.request = make_request;
+exports.get = function(options, callback) {
+  options.method = 'GET';
+  make_request(options, callback);
+}
+exports.post = function(options, callback) {
+  options.method = 'POST';
+  make_request(options, callback);
+}
+exports.put = function(options, callback) {
+  options.method = 'PUT';
+  make_request(options, callback);
+}
+exports.patch = function(options, callback) {
+  options.method = 'PATCH';
+  make_request(options, callback);
+}
+exports.del = function(options, callback) {
+  options.method = 'DELETE';
+  make_request(options, callback);
+}
