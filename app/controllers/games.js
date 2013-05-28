@@ -1,7 +1,7 @@
 // Load Models
 var mongoose = require('mongoose'),
-    Game = require('../models/game'),
-    User = require('../models/user');
+    User = require('../models/user'),
+    Game = require('../models/game');
 
 
 // Get a specific game
@@ -119,7 +119,7 @@ exports.create = function(req, res) {
   });
 
   game.players.push({
-    user: mongoose.types.ObjectId(res.user._id),
+    user: res.user._id,
     user_name: res.user.name,
     user_avatar: res.user.avatar,
     joined_on: Date.now()
@@ -127,7 +127,7 @@ exports.create = function(req, res) {
 
   game.save(function (err) {
     if (err) {
-      res.json(500, err);
+      res.json(406, err);
     } else {
       res.json(game);
     }
