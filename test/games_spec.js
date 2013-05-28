@@ -1,12 +1,38 @@
-var request = require('request');
 var assert = require('assert');
+var request = require('./helpers/auth');
 var mongoose = require('mongoose');
 var User = require('../app/models/user');
 var Game = require('../app/models/game');
 
-//mongoose.connect(require('../config/config').db);
+describe('Games Controller', function() {
+  var url, options;
 
-//describe('Games controller', function() {
+  before(function(){
+    mongoose.connect(require('../config/config').db);
+  });
+
+  beforeEach(function() {
+    url = 'http://localhost:3000/games';
+    options = { url: url };
+  });
+
+  after(function(done) {
+    mongoose.models = {};
+    mongoose.modelSchemas = {};
+    mongoose.connection.close(done);
+  });
+
+  describe('creating a new game', function() {
+    it('should fail when given bad input on POST', function(done) {
+      options.method = 'POST';
+      request(options, function(err, res, body) {
+        assert.notEqual(200, res.statusCode);
+        done();
+      });
+    });
+  });
+
+});
 
   //this.url = 'http://localhost:3000/games';
 
