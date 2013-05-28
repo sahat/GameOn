@@ -29,7 +29,6 @@ exports.key = function (req, res, next){
 exports.user = function(req, res, next){
   var uid = req.body.uid || req.query.uid;
   var token = req.body.token || req.query.token;
-  console.log(uid);
   User.findById(mongoose.Types.ObjectId(uid), function (err, user) {
     if (!err && user && user.token === token) {
       res.user = user;

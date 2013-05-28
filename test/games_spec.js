@@ -1,4 +1,4 @@
-var assert = require('assert');
+var should = require('should');
 var request = require('./helpers/auth');
 var mongoose = require('mongoose');
 var User = require('../app/models/user');
@@ -23,13 +23,24 @@ describe('Games Controller', function() {
   });
 
   describe('creating a new game', function() {
-    it('should fail when given bad input on POST', function(done) {
-      options.method = 'POST';
+
+    it('should get status code 403 if there is no signature', function(done) {
+      options.invalid_signature = true;
       request(options, function(err, res, body) {
-        assert.notEqual(200, res.statusCode);
+        res.should.have.status(403);
         done();
       });
     });
+
+    it('should send status code 401 when user is not signed in', function(done) {
+      options.method = 'POST';
+      request(options, function(err, res, body) {
+        res.should.have.status(401);
+        done();
+      });
+    });
+
+
   });
 
 });

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var request = require('./helpers/auth');
-var assert=require('assert');
+var should = require('should');
 var User = require('../app/models/user');
 
 
@@ -43,9 +43,9 @@ describe('Users Controller', function() {
 
     it('should return json user object on registration success', function(done){
       request(options, function(err, res, body) {
-        assert.equal(res.statusCode, 200);
-        assert.ok(body.token);
-        assert.ok(body.email);
+        res.should.have.status(200);
+        body.token.should.be.ok;
+        body.email.should.be.ok;
         done();
       });
     });
@@ -53,7 +53,8 @@ describe('Users Controller', function() {
     it('should fail if the email is invalid', function(done) {
       options.json.email = 'invalid email';
       request(options, function(err, res, body) {
-        assert.equal(res.statusCode, 400);
+        res.should.have.status(400);
+        should.not.exist(body.token);
         done();
       });
     });
@@ -61,9 +62,9 @@ describe('Users Controller', function() {
     it('should fail if a user with this email already exists', function(done) {
       var existing = new User(user);
       existing.save(function(err) {
-        if (err) { assert.fail(err, undefined, 'Failed to write to database', ''); }
+        should.not.exist(err);
         request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 400);
+          res.should.have.status(400);
           done();
         });
       });
@@ -94,14 +95,14 @@ describe('Users Controller', function() {
       it('should return a 403 if no API key is passed', function(done) {
         options.invalid_signature = true;
         request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 403);
+          res.should.have.status(403);
           done();
         });
       });
 
       it('should return a 401 if authentication fails', function(done) {
         request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 401);
+          res.should.have.status(401);
           done();
         });
       });
@@ -139,25 +140,19 @@ describe('Users Controller', function() {
       it('should return a 403 to an unauthorized client', function(done) {
         options.invalid_signature = true;
         request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 403);
-          assert.equal(undefined, body.token)
-          done();
-        });
-      });
-
-      it('should return a 200', function(done) {
-        request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 200);
+          res.should.have.status(403);
+          should.not.exist(body.token);
+          should.exist(body.error);
           done();
         });
       });
 
       it('should return the correct user', function(done) {
         request(options, function(err, res, body) {
-          assert.equal(res.statusCode, 200);
-          assert.equal(body._id, fake_user.id);
-          assert.equal(body.email, fake_user.email);
-          assert.ok(body.token);
+          res.should.have.status(200);
+          fake_user.id.should.equal(body._id);
+          fake_user.email.should.equal(body.email);
+          should.exist(body.token);
           done();
         });
       });
