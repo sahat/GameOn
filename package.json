@@ -16,9 +16,11 @@
     "Faker": "0.5.x",
     "mocha": "1.10.x",
     "should" : "1.2.x",
-    "factory-lady": "0.1.x"
+    "factory-lady": "0.1.x",
+    "nodemon": "*"
   },
   "scripts": {
+    "start": "nodemon server.js",
     "test": "mocha"
   }
 }
