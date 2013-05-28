@@ -9,7 +9,7 @@
  *    invalid_signature: Setting to true will not send key, secret, and signature
  *    callback: Function to call after response is recieved
  *
- * @param callback Success callback can be specified here and takes priority.
+ * @param callback Callback can be specified here & takes priority over options.
  */
 
 var crypto = require('crypto'),
@@ -36,6 +36,7 @@ var make_request = function(options, callback) {
   }
   if (query_string.token || options.token) {
     query_string.token = query_string.token || options.token;
+    query_string.uid = query_string.uid || options.uid;
   }
 
   var params = {
@@ -51,24 +52,25 @@ var make_request = function(options, callback) {
   request(params, (callback || options.callback));
 };
 
-exports.request = make_request;
-exports.get = function(options, callback) {
+make_request.get = function(options, callback) {
   options.method = 'GET';
   make_request(options, callback);
 }
-exports.post = function(options, callback) {
+make_request.post = function(options, callback) {
   options.method = 'POST';
   make_request(options, callback);
 }
-exports.put = function(options, callback) {
+make_request.put = function(options, callback) {
   options.method = 'PUT';
   make_request(options, callback);
 }
-exports.patch = function(options, callback) {
+make_request.patch = function(options, callback) {
   options.method = 'PATCH';
   make_request(options, callback);
 }
-exports.del = function(options, callback) {
+make_request.del = function(options, callback) {
   options.method = 'DELETE';
   make_request(options, callback);
 }
+
+module.exports = make_request;

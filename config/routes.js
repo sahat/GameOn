@@ -8,14 +8,14 @@ var users = require('../app/controllers/users'),
 
 module.exports = function(app) {
 
-  // All requests must come from a valid client
+  /* All requests must come from a valid client */
   app.all('*', validate_client);
 
   // User registration & login
   app.post('/register', users.register);
   app.post('/login', users.login);
 
-  // All other requests require authentication
+  /* All other requests require authentication */
   app.all('*', require_authentication);
 
   // Users

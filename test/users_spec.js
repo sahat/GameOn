@@ -23,7 +23,7 @@ describe('Users Controller', function() {
 
     var url = base_url + '/register';
     var user, options;
-    beforeEach(function(done) {
+    beforeEach(function() {
       user = {
         name: 'Sahat Yalkabov',
         email: 'test' + parseInt(Math.random() * 1000) + '@gmail.com',
@@ -35,9 +35,8 @@ describe('Users Controller', function() {
         url: url,
         json: user
       }
-      User.remove({email: user.email}, done);
     });
-    after(function(done) {
+    afterEach(function(done) {
       User.remove({email: user.email}, done);
     });
 
