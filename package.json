@@ -9,12 +9,14 @@
     "request": "2.21.x",
     "moment": "2.0.x",
     "email-validator": "0.1.x",
-    "oauth2-provider": "1.x"
+    "oauth2-provider": "1.x",
+    "async": "0.2.x"
   },
   "devDependencies": {
     "Faker": "0.5.x",
     "mocha": "1.10.x",
-    "should" : "1.2.x"
+    "should" : "1.2.x",
+    "factory-lady": "0.1.x"
   },
   "scripts": {
     "test": "mocha"
