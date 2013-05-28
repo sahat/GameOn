@@ -23,12 +23,8 @@ app.configure(function () {
 });
 
 
-// Middleware
-var authenticate = require('./config/middleware/authenticate');
-
-
 // Routes
-require('./config/routes')(app, authenticate);
+require('./config/routes')(app);
 
 
 // Listen on Port
