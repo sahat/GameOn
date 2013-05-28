@@ -17,6 +17,6 @@
     "should" : "1.2.x"
   },
   "scripts": {
-    "test": "mocha spec"
+    "test": "mocha"
   }
 }
