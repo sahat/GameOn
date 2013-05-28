@@ -1,4 +1,6 @@
 --ui bdd
 --reporter spec
---watch
 --growl
+--debug
+--check-leaks
+--watch

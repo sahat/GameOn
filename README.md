@@ -2,6 +2,14 @@
 
 Back-end support for the GameOn iOS app.
 
+Running the server:
+
+    npm start
+
+Running the test as a watch script:
+
+    npm test
+
 ## Features
 
 - User registration
